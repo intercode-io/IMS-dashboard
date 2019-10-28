@@ -13,7 +13,7 @@ import { AnalyticsService } from './@core/utils/analytics.service';
 export class AppComponent implements OnInit {
 
   constructor(private analytics: AnalyticsService) {
-  }
+  }l
 
   ngOnInit(): void {
     this.analytics.trackPageViews();

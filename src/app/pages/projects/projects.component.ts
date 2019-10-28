@@ -7,24 +7,21 @@ import {Project, ProjectInterface} from "../../models/project/project";
 @Component({
   selector: 'ngx-app-projects',
   templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.scss']
+  styleUrls: ['./projects.component.scss'],
 })
 
 export class ProjectsComponent implements AfterViewInit {
 
   displayedColumns: string[] = ["id", "title", "edit"];
-  public dataSource = new MatTableDataSource<ProjectInterface>([]); //outputs table
-  //
-  // @ViewChild(MatPaginator, {static: true})
-  // paginator: MatPaginator;
+  public dataSource = new MatTableDataSource<ProjectInterface>([]); // outputs table
+
 
   constructor(
-    protected  projectHttpService: ProjectHttpService,
-    protected authService: AuthService,
+    private projectHttpService: ProjectHttpService,
+    private authService: AuthService,
   ) { }
 
   ngOnInit() {
-    // this.dataSource.paginator = this.paginator;
     this.getProjects();
   }
 
@@ -36,10 +33,10 @@ export class ProjectsComponent implements AfterViewInit {
       .subscribe(
         result => {
           const projects = result.map(
-            item => new Project(item.id, item.title)
+            item => new Project(item.id, item.title),
           );
           self.dataSource = new MatTableDataSource<ProjectInterface>(projects);
-        }
-      )
+        },
+      );
   }
 }

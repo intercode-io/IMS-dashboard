@@ -12,14 +12,15 @@ export class SpinnerInButtonsComponent {
   loadingMediumGroup = false;
 
   toggleLoadingLargeGroupAnimation() {
-    this.loadingLargeGroup = true;
+    this.loadingLargeGroup = false;
 
-    setTimeout(() => this.loadingLargeGroup = false, 3000);
+    // setTimeout(() => this.loadingLargeGroup = false, 3000);
+    setTimeout(() => this.loadingLargeGroup = false, 1);
   }
 
   toggleLoadingMediumGroupAnimation() {
-    this.loadingMediumGroup = true;
+    this.loadingMediumGroup = false;
 
-    setTimeout(() => this.loadingMediumGroup = false, 3000);
+    setTimeout(() => this.loadingMediumGroup = false, 1);
   }
 }

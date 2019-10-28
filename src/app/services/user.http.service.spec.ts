@@ -1,12 +1,17 @@
-import { TestBed } from '@angular/core/testing';
+import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {User} from "../models/user/user";
+import {BaseHttpService} from "./base.http.service";
+@Injectable()
+export class ProjectHttpService extends BaseHttpService {
 
-import { User.HttpService } from './user.http.service';
+  public permissions;
 
-describe('User.HttpService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  constructor (private http: HttpClient) {
+    super()
+  }
 
-  it('should be created', () => {
-    const service: User.HttpService = TestBed.get(User.HttpService);
-    expect(service).toBeTruthy();
-  });
-});
+  getUser(id: Number) {
+    return this.http.get<User>(this.baseUrl+"/api/user/get/"+id);
+  }
+}

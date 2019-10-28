@@ -11,7 +11,7 @@ export class SpinnerInTabsComponent {
   loading = false;
 
   toggleLoadingAnimation() {
-    this.loading = true;
-    setTimeout(() => this.loading = false, 1000);
+    this.loading = false;
+    setTimeout(() => this.loading = false, 1);
   }
 }

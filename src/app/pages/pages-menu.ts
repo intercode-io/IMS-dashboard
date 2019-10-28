@@ -3,26 +3,26 @@ import { NbMenuItem } from '@nebular/theme';
 export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Dashboard',
+    link: '/pages/dashboard',
     icon: 'home-outline',
-    children: [
-      {
-        title: 'Projects',
-        link: '/pages/dashboard/projects',
-        icon: 'clipboard-outline',
-      },
-      {
-        title: 'Activities',
-        link: '/pages/dashboard/activities',
-        icon: 'clock-outline',
-      },
-    ],
   },
-  // {
-  //   title: 'E-commerce',
-  //   icon: 'shopping-cart-outline',
-  //   link: '/pages/dashboard',
-  //   home: true,
-  // },
+  {
+    title: 'Projects',
+    link: '/pages/projects',
+    icon: 'clipboard-outline',
+  },
+  {
+    title: 'Activities',
+    link: '/pages/activities',
+    icon: 'clock-outline',
+  },
+
+  {
+    title: 'E-commerce',
+    icon: 'shopping-cart-outline',
+    link: '/pages/dashboard',
+    home: true,
+  },
   // {
   //   title: 'IoT Dashboard',
   //   icon: 'home-outline',
