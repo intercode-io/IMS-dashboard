@@ -5,7 +5,7 @@ import {User} from '../models/user/user';
 import {BaseHttpService} from "./base.http.service";
 
 @Injectable()
-export class ProjectHttpService extends BaseHttpService {
+export class UserHttpService extends BaseHttpService {
 
   public permissions;
 

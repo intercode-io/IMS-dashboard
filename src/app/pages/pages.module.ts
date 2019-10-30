@@ -14,6 +14,11 @@ import {AuthService} from "../services/authentification/auth.service";
 import {MatTableModule} from "@angular/material/table";
 import { FormAddProjectComponent } from './projects/modal-add-project/form-add-project/form-add-project.component';
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+import { ActivitiesComponent } from './activities/activities.component';
+import { ModalAddActivityComponent } from './activities/modal-add-activity/modal-add-activity.component';
+import { ModalSelectProjectComponent } from './activities/modal-select-project/modal-select-project.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {MatSnackBarModule, MatSnackBar} from "@angular/material/snack-bar";
 
 @NgModule({
   imports: [
@@ -25,17 +30,23 @@ import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
     MiscellaneousModule,
     MatTableModule,
     NgbModule,
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
   declarations: [
     PagesComponent,
     ModalAddProjectComponent,
     ProjectsComponent,
     FormAddProjectComponent,
+    ActivitiesComponent,
+    ModalAddActivityComponent,
+    ModalSelectProjectComponent,
   ],
   providers: [
     ProjectHttpService,
-    AuthService
-  ]
+    AuthService,
+    MatSnackBar
+  ],
 })
 export class PagesModule {
 }

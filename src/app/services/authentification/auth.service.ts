@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   getUserId() {
-    return 2;
+    return 1;
     // return this.user.id_token;
   }
 

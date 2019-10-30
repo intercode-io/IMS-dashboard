@@ -1,25 +1,21 @@
-<!-- The Modal &ndash;&gt;-->
-<div class="modal fade" id="modal-add-project" #modalAddProject>
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Modal Heading</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-
-      <div class="container">
-        <div class="row">
-<!--          <app-form-add-project></app-form-add-project>-->
-        </div>
-      </div>
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
-        <!--        <button class="btn btn-outline-primary" (click)="tabsetAddProject.select('tab-selectbyid2')">Go To Next</button>-->
-<!--        <button class="btn btn-outline-primary" (click)="submitCreateProjectForm()">Create Project</button>-->
+<ng-template #modalAddProject let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Adding new Project</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <div class="row">
+        <app-form-add-project (titleEvent)="receiveTitle($event)"></app-form-add-project>
       </div>
     </div>
   </div>
-</div>a
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" data-dismiss="modal"
+    (click)="closeModal()">Cancel</button>
+    <!--        <button class="btn btn-outline-primary" (click)="tabsetAddProject.select('tab-selectbyid2')">Go To Next</button>-->
+    <button class="btn btn-outline-primary" (click)="submitCreateProjectForm()">Create Project</button>
+  </div>
+</ng-template>

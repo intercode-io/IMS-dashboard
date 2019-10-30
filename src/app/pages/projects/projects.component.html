@@ -21,7 +21,7 @@
     <ng-container matColumnDef="edit">
       <tr>
         <th mat-header-cell *matHeaderCellDef> Edit </th>
-        <td mat-cell *matCellDef="let element"> <button data-id="{{element.id}}"(click)="openProjectModalEdit()">Edit</button> </td>
+        <td mat-cell *matCellDef="let element"> <button data-id="{{element.id}}">Edit</button> </td>
       </tr>
     </ng-container>
 
@@ -30,11 +30,12 @@
   </table>
 
   <div class="peer">
-    <button type="button" class="btn cur-p btn-primary"
-            data-toggle="modal" data-target="#modal-add-project">
-      Add Project
-    </button>
+    <!--    <button type="button" class="btn cur-p btn-primary"-->
+    <!--            data-toggle="modal" data-target="#modal-add-project">-->
+    <!--      Add Project-->
+    <!--    </button>-->
+    <button class="btn btn-lg btn-outline-primary" (click)="open()">Add project</button>
   </div>
 </div>
 
-<!--<app-modal-add-project></app-modal-add-project>-->
+<modal-add-project (newProject)="addNewProject($event)"></modal-add-project>
