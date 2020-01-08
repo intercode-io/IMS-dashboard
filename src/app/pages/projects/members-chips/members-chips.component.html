@@ -8,7 +8,9 @@
 <!--</div>-->
 <div>
     <tag-input [ngModel]="[]"
-               [onlyFromAutocomplete]="true">
+               [onlyFromAutocomplete]="true"
+               [placeholder]="'Add people'"
+               [secondaryPlaceholder]="'People'">
         <tag-input-dropdown [showDropdownIfEmpty]="true"
                             [dynamicUpdate]="false"
                             [focusFirstElement]="true"

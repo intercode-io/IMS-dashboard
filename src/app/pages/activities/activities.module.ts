@@ -15,6 +15,8 @@ import {TagInputModule} from "ngx-chips";
 import {NbCalendarModule, NbCardModule, NbDatepickerModule, NbIconModule} from "@nebular/theme";
 import {Ng2SmartTableModule} from "ng2-smart-table";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { DisplayColorRenderComponent } from './display-color-render/display-color-render.component';
+import { DisplayColoredCellRenderComponent } from './display-colored-cell-render/display-colored-cell-render.component';
 
 @NgModule({
     imports: [
@@ -37,15 +39,18 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
         ModalActivitiesFilterComponent,
         SmartTableDatepickerComponent,
         SmartTableDatepickerRenderComponent,
+        DisplayColorRenderComponent,
+        DisplayColoredCellRenderComponent,
     ],
     providers: [
         ActivityService,
         NgbTimepicker,
-
     ],
     entryComponents: [
         SmartTableDatepickerComponent,
         SmartTableDatepickerRenderComponent,
+        DisplayColorRenderComponent,
+        DisplayColoredCellRenderComponent,
     ]
 })
 export class ActivitiesModule {

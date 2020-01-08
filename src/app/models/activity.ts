@@ -7,6 +7,7 @@ export interface ActivityInterface {
     logs: string;
     date: Date;
     duration: number;
+    color: string;
 }
 
 export class Activity implements ActivityInterface {
@@ -18,10 +19,12 @@ export class Activity implements ActivityInterface {
     logs: string;
     date: Date;
     duration: number;
+    color: string;
 
 
     constructor(id: number, projectId: number, userId: number,
-                description: string = null, date=null, logs=null, duration=null) {
+                description: string = null, date = null, logs = null,
+                duration = null, color = null) {
         this.id = id;
         this.projectId = projectId;
         // this.projectTitle = projectTitle;
@@ -30,5 +33,6 @@ export class Activity implements ActivityInterface {
         this.date = date;
         this.logs = logs;
         this.duration = duration;
+        this.color = color;
     }
 }

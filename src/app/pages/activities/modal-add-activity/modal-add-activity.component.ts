@@ -15,6 +15,7 @@ import {NgbTime} from "@ng-bootstrap/ng-bootstrap/timepicker/ngb-time";
 import {logger} from "codelyzer/util/logger";
 import {DomEvent} from "leaflet";
 import off = DomEvent.off;
+import {Subscription} from "rxjs";
 // import * as moment from 'moment';
 // import {Input, DoCheck, KeyValueDiffers} from '@angular/core';
 // import {control} from "leaflet";
@@ -33,6 +34,7 @@ export class ModalAddActivityComponent implements OnInit {
     protected userId: number;
     protected date: MatDatepickerInputEvent<Date>;
     protected activityForm: FormGroup;
+    private sub: Subscription = new Subscription();
     qtyOfHours: any;
     err: boolean;
     activityId: number;
@@ -67,6 +69,7 @@ export class ModalAddActivityComponent implements OnInit {
                 projectName: [projectName],
                 description: data.description,
                 date: new Date(data.date),
+                hours: data.hours
             });
 
             const logs = JSON.parse(data.logs);
@@ -85,11 +88,16 @@ export class ModalAddActivityComponent implements OnInit {
     }
 
     closeModal(data = null) {
+        while((<FormArray>this.activityForm.get('time')).length > 1) {
+            (<FormArray>this.activityForm.get('time')).removeAt(1);
+        }
+        this.activityForm.reset();
+        this.activityId = null;
         this.dialogRef.close(data);
     }
 
     ngOnInit() {
-        this.authService.user$.subscribe(r => {
+        const userSub = this.authService.user$.subscribe(r => {
             this.userId = r.id;
         });
         this.getProjects();
@@ -102,7 +110,7 @@ export class ModalAddActivityComponent implements OnInit {
             ])
         });
 
-        this.activityForm.valueChanges.subscribe((data) => {
+        const formSub = this.activityForm.valueChanges.subscribe((data) => {
             let difference = 0;
             for (let time of (<FormArray>this.activityForm.get('time')).value) {
                 try {
@@ -121,6 +129,14 @@ export class ModalAddActivityComponent implements OnInit {
             }
             this.qtyOfHours = difference;
         })
+        this.sub.add(userSub);
+        this.sub.add(formSub);
+    }
+
+    ngOnDestroy() {
+        if (this.sub) {
+            this.sub.unsubscribe();
+        }
     }
 
     addTimeGroupClick() {
@@ -186,7 +202,6 @@ export class ModalAddActivityComponent implements OnInit {
             );
         }
         this.closeModal(val.projectName);
-
     }
 
     getProjects() {

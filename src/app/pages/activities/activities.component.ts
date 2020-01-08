@@ -5,13 +5,15 @@ import {ActivityFilter} from "../../models/activity-filter";
 import {LocalDataSource} from "ng2-smart-table";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ModalAddActivityComponent} from "./modal-add-activity/modal-add-activity.component";
-import { NbDateService } from '@nebular/theme';
-import { Subscription } from "rxjs";
+import {NbDateService} from '@nebular/theme';
+import {Subscription} from "rxjs";
 import {ActivityDateRangeFilter} from "../../models/activity-date-range-filter";
 import {
     SmartTableDatepickerComponent,
     SmartTableDatepickerRenderComponent
 } from "./addons/smart-table-datepicker/smart-table-datepicker.component";
+import {DisplayColorRenderComponent} from "./display-color-render/display-color-render.component";
+import {DisplayColoredCellRenderComponent} from "./display-colored-cell-render/display-colored-cell-render.component";
 
 
 @Component({
@@ -24,6 +26,7 @@ import {
 export class ActivitiesComponent implements OnInit {
     private sub: Subscription = new Subscription();
     public dataSource: LocalDataSource = new LocalDataSource();
+    public a = {a: 2}
 
     @ViewChild(ModalAddActivityComponent, {static: false})
     private modalAddActivity: ModalAddActivityComponent;
@@ -32,7 +35,8 @@ export class ActivitiesComponent implements OnInit {
     constructor(
         private activityService: ActivityService,
         private snackBar: MatSnackBar,
-    ) { }
+    ) {
+    }
 
     ngOnInit() {
         const nextActivitiesSub = this.activityService.filteredList$
@@ -43,7 +47,7 @@ export class ActivitiesComponent implements OnInit {
     }
 
     ngOnDestroy() {
-        if(this.sub) {
+        if (this.sub) {
             this.sub.unsubscribe();
         }
     }
@@ -79,7 +83,7 @@ export class ActivitiesComponent implements OnInit {
             cancelButtonContent: '<i class="nb-close"></i>',
         },
         edit: {
-            confirmSave:true,
+            confirmSave: true,
             editButtonContent: '<i class="nb-edit"></i>',
             saveButtonContent: '<i class="nb-checkmark"></i>',
             cancelButtonContent: '<i class="nb-close"></i>',
@@ -93,36 +97,55 @@ export class ActivitiesComponent implements OnInit {
             //     title: 'Activity ID',
             //     type: 'number',
             // },
+            color: {
+                // title: '',
+                type: 'custom',
+                filter: false,
+                renderComponent: DisplayColorRenderComponent
+            },
             userName: {
                 title: 'User Name',
-                type: 'string',
+                type: 'custom',
                 filter: false,
+                renderComponent: DisplayColoredCellRenderComponent,
             },
             projectTitle: {
                 title: 'Project Title',
-                type: 'string',
+                type: 'custom',
                 filter: false,
+                renderComponent: DisplayColoredCellRenderComponent,
             },
             description: {
                 title: 'Description',
-                type: 'string',
+                type: 'custom',
                 filter: false,
+                renderComponent: DisplayColoredCellRenderComponent,
             },
             date: {
                 title: 'date',
-                type: 'string',
+                type: 'custom',
                 filter: false,
+                renderComponent: DisplayColoredCellRenderComponent,
             },
             duration: {
                 title: 'duration',
-                type: 'number',
+                type: 'custom',
                 filter: false,
+                renderComponent: DisplayColoredCellRenderComponent,
             },
-            logs: {
-                title: 'logs',
-                type: 'string',
-                filter: false,
-            },
+            // logs: {
+            //     title: 'Logs',
+            //     type: 'custom',
+            //     filter: false,
+            //     renderComponent: DisplayColoredCellRenderComponent,
+                // valuePrepareFunction: (cell, row) => {
+                //     // example of value.... value = 1543105073896
+                //     // value is timeStamp
+                //     console.log("valuePREPARE CELL:", cell);
+                //     console.log("valuePREPARE ROW:", row);
+                //     return `<div [style.backgroundColor]="row.color">${cell}</div>`;
+                //     // return `<!--<div style="background-color:red">${cell}</div>-->`;
+                // },
         },
     };
 
@@ -134,12 +157,11 @@ export class ActivitiesComponent implements OnInit {
                         event.confirm.resolve();
                         this.snackBar.open(`Activity with id"${event.data.id}" was successfully removed.`,
                             'OK', {
-                            duration: 5000,
-                            horizontalPosition: "center",
-                            verticalPosition: "top"
-                        });
-                    }
-                    else {
+                                duration: 5000,
+                                horizontalPosition: "center",
+                                verticalPosition: "top"
+                            });
+                    } else {
                         this.snackBar.open(`Activity with id"${event.data.id}" was not removed.`,
                             'OK', {
                                 duration: 5000,
@@ -164,12 +186,20 @@ export class ActivitiesComponent implements OnInit {
         this.modalAddActivity.open($event.data);
         this.modalAddActivity.dialogRef.result.then(result => {
             if (result) {
-                this.snackBar.open(`Activity for project "${result.projectName}" updated.`, 'OK', {
+                this.snackBar.open(`Activity for project "${result}" updated.`, 'OK', {
                     duration: 5000,
                     horizontalPosition: "center",
                     verticalPosition: "top"
                 });
             }
+            else {
+                this.snackBar.open(`Activity for project "${result.projectName}" was not updated.`, 'OK', {
+                    duration: 5000,
+                    horizontalPosition: "center",
+                    verticalPosition: "top"
+                });
+            }
+            this.modalAddActivity.dialogRef.close();
         });
         console.log("modal edit $event");
         console.log($event);
@@ -210,6 +240,6 @@ export class ActivitiesComponent implements OnInit {
         } else {
             event.confirm.reject();
         }
-        return new Activity( event.data.title, null, 2, event.data.description, null, null);
+        return new Activity(event.data.title, null, 2, event.data.description, null, null);
     }
 }

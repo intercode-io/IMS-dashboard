@@ -17,6 +17,8 @@ import {TagInputModule} from "ngx-chips";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {Ng2SmartTableModule} from "ng2-smart-table";
 import {NbCardModule} from "@nebular/theme";
+import { MembersChipsEditRenderComponent } from './members-chips-edit-render/members-chips-edit-render.component';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
     imports: [
@@ -27,7 +29,7 @@ import {NbCardModule} from "@nebular/theme";
         Ng2SmartTableModule,
         NbCardModule,
         NgbTabsetModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
     ],
     declarations: [
         ColorPickerComponent,
@@ -37,6 +39,7 @@ import {NbCardModule} from "@nebular/theme";
         ProjectsComponent,
         ModalAddProjectComponent,
         FormAddProjectComponent,
+        MembersChipsEditRenderComponent,
     ],
     providers: [
         AuthService,
@@ -54,6 +57,7 @@ import {NbCardModule} from "@nebular/theme";
         MembersChipsComponent,
         ColorRenderComponent,
         ColorEditorRenderComponent,
+        MembersChipsEditRenderComponent,
     ]
 })
 export class ProjectsModule {

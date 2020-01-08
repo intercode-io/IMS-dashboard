@@ -9,7 +9,7 @@ import {ColorPickerComponent} from "@syncfusion/ej2-angular-inputs";
 })
 
 
-export class ColorEditorRenderComponent extends DefaultEditor implements AfterViewInit {
+export class ColorEditorRenderComponent extends DefaultEditor implements OnInit {
 
     colorValue: string;
 
@@ -20,7 +20,7 @@ export class ColorEditorRenderComponent extends DefaultEditor implements AfterVi
         super();
     }
 
-    ngAfterViewInit() {
+    ngOnInit() {
         if (this.cell.newValue !== '') {
             if (typeof this.cell.getValue() == 'string') {
                 this.colorValue = this.cell.getValue();

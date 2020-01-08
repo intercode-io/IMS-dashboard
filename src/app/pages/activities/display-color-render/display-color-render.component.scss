@@ -1,0 +1,49 @@
+$radius: 5px;
+
+.circle {
+    $size: 40px;
+    height: $size;
+    width: $size;
+    box-sizing: border-box;
+    border-radius: 100%;
+    cursor: pointer;
+    border: 1px solid #dadada;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+}
+
+.color-render {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.summary-info {
+    box-shadow: 0 7px 13px 0 rgba(86, 95, 102, 0.07);
+    background: #fff;
+    width: 80px;
+    max-width: 240px;
+    padding: 15px;
+    border-radius: $radius;
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+
+    .info {
+        width: calc(100% - 40px); //40px is $size
+        p.style {
+            color: #000;
+            margin-bottom: 5px;
+        }
+        p.style-value {
+            color: #595b65;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 10px;
+        }
+    }
+}
+
+.vl {
+    border-left: 6px;
+    height: 40px;
+}

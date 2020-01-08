@@ -8,6 +8,7 @@ import {LocalDataSource} from "ng2-smart-table";
 import {MembersChipsComponent} from "./members-chips/members-chips.component";
 import {ColorRenderComponent} from "./color-render/color-render.component";
 import {ColorEditorRenderComponent} from "./color-editor-render/color-editor-render.component";
+import {MembersChipsEditRenderComponent} from "./members-chips-edit-render/members-chips-edit-render.component";
 
 @Component({
     selector: 'ngx-app-projects',
@@ -95,13 +96,16 @@ export class ProjectsComponent implements OnInit {
             title: {
                 title: 'Title',
                 type: 'string',
-
             },
             members: {
                 title: 'Members',
                 type: 'custom',
                 renderComponent: MembersChipsComponent,
 
+                editor: {
+                  type: 'custom',
+                    component: MembersChipsEditRenderComponent,
+                },
             },
             color:  {
                 title: 'Color',

@@ -1,0 +1,12 @@
+<div class="force-to-the-bottom">
+    <tag-input [ngModel]="['Default user']"
+               [placeholder]="'Add people'"
+               [secondaryPlaceholder]="'People'">
+        <tag-input-dropdown
+            [autocompleteItems]="items"
+            [showDropdownIfEmpty]="true"
+            [dynamicUpdate]="false"
+        >
+        </tag-input-dropdown>
+    </tag-input>
+</div>
