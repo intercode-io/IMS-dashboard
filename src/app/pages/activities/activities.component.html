@@ -1,41 +1,45 @@
-<modal-add-activity></modal-add-activity>
+<div class="activities-component">
+    <modal-add-activity></modal-add-activity>
 
-<nb-card>
-    <nb-card-header>
+    <nb-card>
+        <nb-card-header>
 
-        <div class="row">
-            <div class="col-5">
-                <div class="peer">
-                    <button type="button" class="btn cur-p btn-primary"
-                            data-target="#modal-add-activity" (click)="open()">
-                        Add Activity
-                    </button>
+            <div class="row">
+                <div class="col-3">
+                    <div class="peer">
+                        <button type="button" class="btn cur-p btn-primary"
+                                data-target="#modal-add-activity" (click)="open()">
+                            Add Activity
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-5 offset-4">
+                    <modal-activities-filter></modal-activities-filter>
+                </div>
+
+            </div>
+
+        </nb-card-header>
+        <br>
+
+        <nb-card-body>
+            <div class="row">
+                <div class="col-12 content-col">
+                    <div>
+                        <ng2-smart-table [settings]="settings"
+                                         [source]="dataSource"
+                                         (deleteConfirm)="onDeleteConfirm($event)"
+                                         (createConfirm)="onCreateConfirm($event)"
+                                         (edit)="onEdit($event)">
+                        </ng2-smart-table>
+                        <div class="no-data-row row" *ngIf="dataSource.count() == 0">
+                            <td class="no-data">No data found</td>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </nb-card-body>
 
-            <div class="col-7">
-                <modal-activities-filter></modal-activities-filter>
-            </div>
-
-        </div>
-
-    </nb-card-header>
-    <br>
-
-    <nb-card-body>
-        <div class="row">
-            <div class="col-md-10">
-                <div>
-                    <ng2-smart-table [settings]="settings"
-                                     [source]="dataSource"
-                                     (deleteConfirm)="onDeleteConfirm($event)"
-                                     (createConfirm)="onCreateConfirm($event)"
-                                     (edit)="onEdit($event)">
-                    </ng2-smart-table>
-                </div>
-            </div>
-        </div>
-    </nb-card-body>
-
-</nb-card>
-<!--<div>{{a}}</div>-->
+    </nb-card>
+</div>

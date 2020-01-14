@@ -1,6 +1,92 @@
-::ng-deep .list-area {
-    z-index: 99999;
+.activities-filter {
+
+    & ::ng-deep {
+        .selected-list {
+            height:40px;
+            width: 200px;
+            display: block;
+            border: solid;
+            border-width: thin;
+        }
+
+        .c-btn {
+            height: 38px;
+            outline: none;
+            border: none;
+            font-size: 100%;
+            line-height: 1.15;
+            color: gray;
+            font-weight: 100;
+        }
+
+        .c-token {
+            background: white;
+            padding-top: 6px !important;
+            padding-right: 4px !important;
+            padding-bottom: 1px !important;
+        }
+
+        .c-list {
+            display: contents;
+            padding: 0 0 0 0;
+        }
+
+        .c-remove {
+            display: none;
+        }
+
+        .countplaceholder {
+            display: contents;
+            font-family: Open Sans, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        label {
+            color: black;
+            font-family: Open Sans, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .dropdown-list {
+            width: 19.25rem;
+        }
+
+    }
+
+    .date-input {
+        height: 40px;
+        width: 200px;
+        padding-left: 6px;
+        font: 15px;
+        margin: 0;
+        border: solid;
+        border-width: thin;
+        box-shadow: none;
+
+        font-family: Open Sans, sans-serif;
+        font-size: 14px;
+        font-weight: normal;
+    }
+
+    .custom-header {
+        height: 40px;
+    }
+    //
+    //.multiselect-input {
+    //    display: block;
+    //    height:40px;
+    //    width: 250px;
+    //    border: solid;
+    //    border-width: thin;
+    //}
+
 }
-::ng-deep .div {
-    z-index: 99999;
-}
+//::ng-deep .list-area {
+//    z-index: 99999;
+//}
+//::ng-deep .div {
+//    z-index: 99999;
+//}
+

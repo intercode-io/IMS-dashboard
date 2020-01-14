@@ -1,6 +1,6 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Activity} from "../../models/activity";
-import {ActivityService} from "../../services/activity.service";
+import {ActivityService} from "./activity.service";
 import {ActivityFilter} from "../../models/activity-filter";
 import {LocalDataSource} from "ng2-smart-table";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -19,14 +19,15 @@ import {DisplayColoredCellRenderComponent} from "./display-colored-cell-render/d
 @Component({
     selector: 'activities',
     templateUrl: './activities.component.html',
-    styleUrls: ['./activities.component.scss']
+    styleUrls: ['./activities.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated
 })
+
 
 
 export class ActivitiesComponent implements OnInit {
     private sub: Subscription = new Subscription();
     public dataSource: LocalDataSource = new LocalDataSource();
-    public a = {a: 2}
 
     @ViewChild(ModalAddActivityComponent, {static: false})
     private modalAddActivity: ModalAddActivityComponent;
@@ -44,6 +45,7 @@ export class ActivitiesComponent implements OnInit {
                 this.dataSource = new LocalDataSource(activities);
             });
         this.sub.add(nextActivitiesSub);
+
     }
 
     ngOnDestroy() {
@@ -77,6 +79,7 @@ export class ActivitiesComponent implements OnInit {
         pager: {
             display: true,
         },
+        noDataMessage: '',
         add: {
             addButtonContent: '<i class="nb-plus"></i>',
             createButtonContent: '<i class="nb-checkmark"></i>',
@@ -98,9 +101,10 @@ export class ActivitiesComponent implements OnInit {
             //     type: 'number',
             // },
             color: {
-                // title: '',
+                title: ' ',
                 type: 'custom',
                 filter: false,
+                width: '10px',
                 renderComponent: DisplayColorRenderComponent
             },
             userName: {

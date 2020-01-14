@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild, Output, EventEmitter} from '@a
 import {FormAddProjectComponent} from "./form-add-project/form-add-project.component";
 import {NgbModal, NgbModalConfig, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {Project, ProjectInterface} from "../../../models/project";
-import {ProjectService} from "../../../services/project.service";
+import {ProjectService} from "../project.service";
 
 @Component({
     selector: 'modal-add-project',

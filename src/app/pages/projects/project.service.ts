@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
-import {Project, ProjectInterface} from "../models/project";
-import {CommonHttpService} from "./common-http.service";
+import {Project, ProjectInterface} from "../../models/project";
 import {BehaviorSubject, Observable, of} from "rxjs";
-import {User} from "../models/user";
 import {catchError, first} from "rxjs/operators";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {CommonHttpService} from "../../services/common-http.service";
 
 @Injectable()
 export class ProjectService {

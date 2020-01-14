@@ -1,31 +1,44 @@
-<!--<div class="row">-->
-<div class="row justify-content-md-end">
-<!--        <h4>Activity filter</h4>-->
-        <div class="col-auto">
-            <input nbInput placeholder="Select Dates" [nbDatepicker]="rangepicker">
+<div class="activities-filter">
+    <!--<div class="row">-->
+    <!--        <h4>Activity filter</h4>-->
+    <div class="row custom-header">
+        <div class="col-4">
+            <input class="date-input"
+                   nbInput placeholder="Select Dates"
+                   [nbDatepicker]="rangepicker">
             <nb-rangepicker (rangeChange)="onEventStartEndRange($event)"
                             value="(min)"
                             #rangepicker>
+                <button>Reset</button>
             </nb-rangepicker>
         </div>
-        <br>
-        <div class="col-5">
-            <angular2-multiselect [data]="projectList" [(ngModel)]="selectedItems"
-                                  [settings]="dropdownSettings"
-                                  (onSelect)="onItemSelect($event)"
-                                  (onDeSelect)="OnItemDeSelect($event)"
-                                  (onSelectAll)="onSelectAll($event)"
-                                  (onDeSelectAll)="onDeSelectAll($event)">
-                <c-item>
-                    <ng-template let-item="item">
-                        <label style="color: #333;min-width: 150px;">{{item.title}}</label>
-                    </ng-template>
-                </c-item>
+        <!--        <br>-->
+        <div class="col-4">
+                <angular2-multiselect [data]="projectList"
+                                      [(ngModel)]="selectedProjects"
+                                      [settings]="dropdownSettings"
+                                      (onSelect)="onChange($event)"
+                                      (onDeSelect)="onChange($event)"
+                                      (onSelectAll)="onChange($event)"
+                                      (onDeSelectAll)="onChange($event)">
+                    <c-item>
+                        <ng-template let-item="item">
+                            <label style="color: #333;min-width: 150px;">{{item.title}}</label>
+                        </ng-template>
+                    </c-item>
 
-            </angular2-multiselect>
+                    <c-badge>
+                        <ng-template let-item="item">
+                            <label>{{item.title}}</label>
+                        </ng-template>
+                    </c-badge>
+
+                </angular2-multiselect>
         </div>
         <br>
         <br>
-
     </div>
-<!--</div>-->
+
+    <!--</div>-->
+
+</div>

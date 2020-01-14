@@ -16,6 +16,9 @@
                                  (createConfirm)="onCreateConfirm($event)"
                                  (editConfirm)="onEditConfirm($event)">
                 </ng2-smart-table>
+                <div class="no-data-row row">
+                    <td class="no-data" *ngIf="dataSource.count() == 0">No data found</td>
+                </div>
             </div>
 
         </div>

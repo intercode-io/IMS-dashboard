@@ -1,8 +1,8 @@
 import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators, FormArray, FormBuilder, AbstractControl} from '@angular/forms';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
-import {ActivityService} from "../../../services/activity.service";
-import {ProjectService} from "../../../services/project.service";
+import {ActivityService} from "../activity.service";
+import {ProjectService} from "../../projects/project.service";
 import {AuthService} from "../../../services/auth.service";
 import {Project} from "../../../models/project";
 // import {Time} from "../../../models/Time";

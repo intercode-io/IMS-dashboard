@@ -1,9 +1,11 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {NbDateService} from "@nebular/theme";
-import {ActivityService} from "../../../services/activity.service";
+import {ActivityService} from "../activity.service";
 import {ActivityDateRangeFilter} from "../../../models/activity-date-range-filter";
 import {Subscription} from "rxjs";
-import {ProjectService} from "../../../services/project.service";
+import {ProjectService} from "../../projects/project.service";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Project} from "../../../models/project";
 
 @Component({
     selector: 'modal-activities-filter',
@@ -13,16 +15,28 @@ import {ProjectService} from "../../../services/project.service";
 export class ModalActivitiesFilterComponent implements OnInit {
     private sub: Subscription = new Subscription();
 
+    private filterForm: FormGroup;
     projectList = [];
-    selectedItems = [];
+    selectedProjects: Project[];
+    selectedItems$ = this.activityService.projectIdsFilter$;
     dropdownList = [];
+    datarange = {};
 
     constructor(
         private activityService: ActivityService,
-        private projectService: ProjectService
+        private projectService: ProjectService,
+        private fb: FormBuilder,
     ) { }
 
     ngOnInit() {
+        // this.datarange = {
+        //     "start": "2020-01-08T22:00:00.000Z",
+        //     "end": "2020-01-15T22:00:00.000Z"
+        // };
+        // this.filterForm = this.fb.group({
+        //     projects: [[]]
+        //     }
+        // );
         const projectListNextObs = this.projectService.getProjectList()
             .subscribe(p => {
                 this.projectService.announceProjectList(p);
@@ -36,6 +50,7 @@ export class ModalActivitiesFilterComponent implements OnInit {
 
         this.sub.add(projectListNextObs);
         this.sub.add(projectListObs);
+        this.sub.add(this.listenSelectedProjectsIds());
     }
 
     ngOnDestroy() {
@@ -46,6 +61,7 @@ export class ModalActivitiesFilterComponent implements OnInit {
 
     onEventStartEndRange($event) {
         if ($event.start != null && $event.end != null) {
+            $event.start.setHours(0,0,0,0);
             const filter = new ActivityDateRangeFilter($event.start, $event.end);
             this.activityService.announceDateRangeFilter(filter);
         }
@@ -59,38 +75,26 @@ export class ModalActivitiesFilterComponent implements OnInit {
         selectAllText:'Select All',
         unSelectAllText:'UnSelect All',
         enableSearchFilter: false,
-        classes:"myclass custom-class"
+        classes:"myclass custom-class",
+        badgeShowLimit: 1
     };
 
-    onItemSelect(item:any){
-        let arr=[];
-        this.selectedItems.forEach(i => {
-            arr[arr.length] = i.id;
-        });
-        this.activityService.announceProjectIdsFilter(arr);
+    onChange(items){
+        let res = this.selectedProjects.map(project => project.id );
+        this.activityService.announceProjectIdsFilter(res);
     }
 
-    OnItemDeSelect(item:any){
-        let arr=[];
-        this.selectedItems.forEach(i => {
-            arr[arr.length] = i.id;
+    listenSelectedProjectsIds() {
+        return this.activityService.projectIdsFilter$.subscribe((ids: number[]) => {
+           // this.selectedProjects = ids;o
+            this.selectedProjects = [];
+            if(this.projectList) {
+                ids.forEach(n => {
+                    const project = this.projectList.find(project => project.id == n);
+                    if (project)
+                        this.selectedProjects.push(project);
+                });
+            }
         });
-        this.activityService.announceProjectIdsFilter(arr);
-    }
-
-    onSelectAll(items: any){
-        let arr=[];
-        this.selectedItems.forEach(i => {
-            arr[arr.length] = i.id;
-        });
-        this.activityService.announceProjectIdsFilter(arr);
-    }
-
-    onDeSelectAll(items: any){
-        let arr=[];
-        this.selectedItems.forEach(i => {
-            arr[arr.length] = i.id;
-        });
-        this.activityService.announceProjectIdsFilter(arr);
     }
 }

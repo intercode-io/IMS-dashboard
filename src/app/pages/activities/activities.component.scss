@@ -1,23 +1,105 @@
-::ng-deep {
-    & .nb-edit,
-    & .nb-trash {
-        opacity: 0;
-        transition-duration: 0.8s;
-    }
+.activities-component {
 
-    & tr:hover {
-        & .nb-edit,
-        & .nb-trash {
-            opacity: 1;
-            transition-duration: 0.1ms;
+    & ::ng-deep {
+        .nb-edit,
+        .nb-trash {
+            opacity: 0;
+            transition-duration: 0.2s;
         }
+
+        tr:hover {
+            & .nb-edit,
+            & .nb-trash {
+                opacity: 1;
+                transition-duration: 0.1ms;
+            }
+        }
+
+        .btn-primary {
+            height: 40px;
+        }
+
+        ng2-smart-table table tr.ng2-smart-titles th {
+            text-transform: capitalize;
+            background-color: #F5F5F5;
+        }
+
+        ng2-smart-table table tr th, ng2-smart-table table tr th a {
+        }
+
+        ng2-smart-table thead tr.ng2-smart-filters th {
+            padding: 0 0 0 0;
+        }
+
+        ng2-smart-table table tr td {
+            padding-bottom: 0;
+            padding-top: 0;
+
+            // for the first column
+            &:first-child {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+
+        // removing paddings for the 1st column
+        ng2-smart-table table tr.ng2-smart-titles th {
+            &:first-child {
+                padding: 0 0 0 0;
+            }
+        }
+
+        // no data style
+        [_ngcontent-yxp-c26] {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+        }
+
+        nb-card-header {
+            padding: 25px 25px !important;
+            padding-left: 25px !important;
+        }
+
+        nb-card-body {
+            padding: 25px 25px 0 38px !important;
+        }
+
+        nav.ng2-smart-pagination-nav {
+            padding-top: 5px;
+        }
+
+        .btn-primary {
+            height: 40px !important;
+        }
+
+        .content-col {
+            padding-left: 0;
+        }
+
+    } // ng-deep end
+
+    .no-data-row {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        justify-content: space-evenly;
     }
 
-    //tbody tr:nth-child(even) {
-    //    background: #ffee58 !important;
-    //}
-    //tbody tr:nth-child(odd) {
-    //    background: #d9b34c !important;
-    //}
-
+    .no-data {
+        text-align: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
 }
+
+
+//
+
+//tbody tr:nth-child(even) {
+//    background: #ffee58 !important;
+//}
+//tbody tr:nth-child(odd) {
+//    background: #d9b34c !important;
+//}

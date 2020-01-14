@@ -6,7 +6,7 @@ import {ColorRenderComponent} from "./color-render/color-render.component";
 import {ColorEditorRenderComponent} from "./color-editor-render/color-editor-render.component";
 import {ColorPickerComponent} from "./color-picker/color-picker.component";
 import {AuthService} from "../../services/auth.service";
-import {ProjectService} from "../../services/project.service";
+import {ProjectService} from "./project.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {NgxSmartModalService} from "ngx-smart-modal";
 import {NgbModal, NgbModalConfig, NgbTabsetModule, NgbTimepicker} from "@ng-bootstrap/ng-bootstrap";

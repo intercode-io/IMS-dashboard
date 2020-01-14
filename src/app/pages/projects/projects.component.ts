@@ -1,8 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ModalAddProjectComponent} from "./modal-add-project/modal-add-project.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Project, ProjectInterface} from "../../models/project";
-import {ProjectService} from "../../services/project.service";
+import {ProjectService} from "./project.service";
 import {AuthService} from "../../services/auth.service";
 import {LocalDataSource} from "ng2-smart-table";
 import {MembersChipsComponent} from "./members-chips/members-chips.component";
@@ -14,6 +14,7 @@ import {MembersChipsEditRenderComponent} from "./members-chips-edit-render/membe
     selector: 'ngx-app-projects',
     templateUrl: './projects.component.html',
     styleUrls: ['./projects.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class ProjectsComponent implements OnInit {
@@ -75,6 +76,7 @@ export class ProjectsComponent implements OnInit {
         pager: {
             display: true,
         },
+        noDataMessage: '',
 
         add: {
             addButtonContent: '<i class="nb-plus"></i>',
@@ -108,7 +110,7 @@ export class ProjectsComponent implements OnInit {
                 },
             },
             color:  {
-                title: 'Color',
+                title: 'color',
                 type: 'custom',
                 renderComponent: ColorRenderComponent,
 

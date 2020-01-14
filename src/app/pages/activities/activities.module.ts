@@ -8,7 +8,7 @@ import {
     SmartTableDatepickerComponent,
     SmartTableDatepickerRenderComponent
 } from "./addons/smart-table-datepicker/smart-table-datepicker.component";
-import {ActivityService} from "../../services/activity.service";
+import {ActivityService} from "./activity.service";
 import {NgbTimepicker, NgbTimepickerModule} from "@ng-bootstrap/ng-bootstrap";
 import {AngularMultiSelectModule} from "angular2-multiselect-dropdown";
 import {TagInputModule} from "ngx-chips";
