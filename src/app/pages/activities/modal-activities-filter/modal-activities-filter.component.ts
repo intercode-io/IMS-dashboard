@@ -88,7 +88,7 @@ export class ModalActivitiesFilterComponent implements OnInit {
         return this.activityService.projectIdsFilter$.subscribe((ids: number[]) => {
            // this.selectedProjects = ids;o
             this.selectedProjects = [];
-            if(this.projectList) {
+            if(this.projectList) { // ? projectList is initialised later
                 ids.forEach(n => {
                     const project = this.projectList.find(project => project.id == n);
                     if (project)

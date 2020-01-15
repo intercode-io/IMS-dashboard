@@ -43,8 +43,6 @@ export class ActivityService {
         this.dateRangeFilter$
     ).pipe(
         switchMap(([projectIdsFilter, dateRangeFilter]) => {
-            console.log("from:", dateRangeFilter.dateFrom);
-            console.log("to:", dateRangeFilter.dateTo);
             return this.getActivityList(new ActivityFilter(projectIdsFilter, dateRangeFilter))
         })
     );
@@ -59,7 +57,6 @@ export class ActivityService {
     ) {
         this.sub.add(this.listenForProjectChanges());
         this.sub.add(this.listenForDateChanges());
-        // this.announceProjectIdsFilter([1]);
     }
 
     ngOnDestroy() {
@@ -77,7 +74,7 @@ export class ActivityService {
             this.projectIdsFilter$
         ).pipe(
             distinctUntilChanged()
-        ).subscribe((ids: any) => {
+        ).subscribe((ids: any) => { // ? any || number
         // ).subscribe((ids: number[] | string[]) => {
             console.log("ids:", ids);
             if (!this.arraysEquals(this.projectIdsFilter.value, ids)) {
@@ -89,7 +86,7 @@ export class ActivityService {
 
             const qpSnapshot = this.route.snapshot.queryParams;
             if (qpSnapshot.ids == undefined) {
-                ids = [1];  //default projects
+                ids = ["all"];  //default projects
                 let queryParams = {};
 
                 if (ids.length) {
@@ -122,7 +119,20 @@ export class ActivityService {
                 filter(qp => qp.get('start') != null),
                 filter(qp => qp.get('end') != null),
                 map(qp => {
-                    return new ActivityDateRangeFilter(new Date(qp.get('start')), new Date(qp.get('end')))
+                    let offset = (new Date).getTimezoneOffset()/60;
+                    if (offset < 0)
+                        offset=-offset;
+                    let dateStart = new Date(qp.get('start'));
+                    dateStart.setUTCHours(offset,0,0,0);
+                    dateStart.toISOString();
+
+                    offset = (new Date).getTimezoneOffset()/60;
+                    if (offset < 0)
+                        offset=-offset;
+                    let dateEnd = new Date(qp.get('end'));
+                    dateEnd.setUTCHours(offset,0,0,0);
+                    dateEnd.toISOString();
+                    return new ActivityDateRangeFilter(dateStart, dateEnd);
                 })
             ),
             // this.route.queryParamMap.pipe(
@@ -133,8 +143,9 @@ export class ActivityService {
         ).pipe(
             distinctUntilChanged()
         ).subscribe((dates: ActivityDateRangeFilter) => {
-            console.log("DATES ", dates);
-            console.log("DATES2 ", this.dateRangeFilter.value);
+            console.log("DATES: ", dates);
+            console.log("  DRF: ", this.dateRangeFilter.value);
+            console.log("RESULT =>  ", this.compareActivityDateRange(this.dateRangeFilter.value, dates));
             if (!this.compareActivityDateRange(this.dateRangeFilter.value, dates)) {
                 this.announceDateRangeFilter(dates);
             }
@@ -143,16 +154,21 @@ export class ActivityService {
 
             // if (!this.arraysEquals(qpSnapshot.ids.split('-'), ids)) {
             let queryParams = {};
+            const dateFrom = [dates.dateFrom.getDay(), dates.dateFrom.getMonth(), dates.dateFrom.getFullYear()];
+            const dateTo = [dates.dateTo.getDay(), dates.dateTo.getMonth(), dates.dateTo.getFullYear()];
 
-            if (dates)
-                queryParams = {...qpSnapshot, start: dates.dateFrom.toLocaleDateString('en-US'), end: dates.dateTo.toLocaleDateString('en-US')};
+            if (dateFrom && dateTo)
+                queryParams = {...qpSnapshot, start: dateFrom.join('-'), end: dateTo.join('-')};
 
             return this.router.navigate([], {relativeTo: this.route, queryParams});
         });
     }
 
     compareActivityDateRange(filter1: ActivityDateRangeFilter, filter2: ActivityDateRangeFilter) {
-        if (filter1.dateFrom == filter2.dateFrom && filter1.dateTo == filter2.dateTo)
+        if (+filter1.dateFrom === +filter2.dateFrom &&
+            +filter1.dateTo === +filter2.dateTo)
+            // if (filter1.dateFrom.getTime() == filter2.dateFrom.getTime() &&
+            //     filter1.dateTo.getTime() == filter2.dateTo.getTime())
             return true;
         else
             return false;
