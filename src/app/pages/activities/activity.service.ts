@@ -68,8 +68,12 @@ export class ActivityService {
     private listenForProjectChanges() {
         return merge(
             this.route.queryParamMap.pipe(
-                filter(qp => qp.get('ids') != null),
-                map(qp => qp.get('ids').split('-'))
+                map(qp => {
+                    if (qp.get('ids'))
+                        return qp.get('ids').split('-');
+                    else
+                        return ["all"];
+                })
             ),
             this.projectIdsFilter$
         ).pipe(
@@ -119,20 +123,16 @@ export class ActivityService {
                 filter(qp => qp.get('start') != null),
                 filter(qp => qp.get('end') != null),
                 map(qp => {
-                    let offset = (new Date).getTimezoneOffset()/60;
-                    if (offset < 0)
-                        offset=-offset;
-                    let dateStart = new Date(qp.get('start'));
-                    dateStart.setUTCHours(offset,0,0,0);
-                    dateStart.toISOString();
-
-                    offset = (new Date).getTimezoneOffset()/60;
-                    if (offset < 0)
-                        offset=-offset;
-                    let dateEnd = new Date(qp.get('end'));
-                    dateEnd.setUTCHours(offset,0,0,0);
-                    dateEnd.toISOString();
-                    return new ActivityDateRangeFilter(dateStart, dateEnd);
+                    try {
+                        let dateStart = new Date(qp.get('start'));
+                        let dateEnd = new Date(qp.get('end'));
+                        return new ActivityDateRangeFilter(dateStart, dateEnd);
+                    }
+                    catch (e) {
+                        console.log("ERROR IN FILTER");
+                        console.log(e);
+                        new ActivityDateRangeFilter(new Date(1900, 11, 11), new Date(2100, 11, 11))
+                    }
                 })
             ),
             // this.route.queryParamMap.pipe(
@@ -154,8 +154,8 @@ export class ActivityService {
 
             // if (!this.arraysEquals(qpSnapshot.ids.split('-'), ids)) {
             let queryParams = {};
-            const dateFrom = [dates.dateFrom.getDay(), dates.dateFrom.getMonth(), dates.dateFrom.getFullYear()];
-            const dateTo = [dates.dateTo.getDay(), dates.dateTo.getMonth(), dates.dateTo.getFullYear()];
+            const dateFrom = [dates.dateFrom.getMonth(), dates.dateFrom.getDay(), dates.dateFrom.getFullYear()];
+            const dateTo = [dates.dateTo.getMonth(), dates.dateTo.getDay(), dates.dateTo.getFullYear()];
 
             if (dateFrom && dateTo)
                 queryParams = {...qpSnapshot, start: dateFrom.join('-'), end: dateTo.join('-')};
@@ -165,6 +165,8 @@ export class ActivityService {
     }
 
     compareActivityDateRange(filter1: ActivityDateRangeFilter, filter2: ActivityDateRangeFilter) {
+        if (filter1 == undefined || filter2 == undefined)
+            return false;
         if (+filter1.dateFrom === +filter2.dateFrom &&
             +filter1.dateTo === +filter2.dateTo)
             // if (filter1.dateFrom.getTime() == filter2.dateFrom.getTime() &&
