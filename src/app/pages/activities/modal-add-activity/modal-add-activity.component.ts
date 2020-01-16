@@ -160,15 +160,14 @@ export class ModalAddActivityComponent implements OnInit {
     //TODO change data access
     submitCreateActivityForm(): void {
         const val = this.activityForm.value;
-        //.setHours(0,0,0,0).toISOString();
         const projectData = val.projectName[0].split(',', 2);
-        let date2 = new Date((new Date(val.date)).setHours(0,0,0,0));
-        date2.toUTCString();
-        let offset = (new Date).getTimezoneOffset()/60;
-        if (offset < 0)
-            offset=-offset;
-        let date = new Date(val.date.setUTCHours(offset,0,0,0));
-        date.toISOString();
+        // //.setHours(0,0,0,0).toISOString();
+        // let date2 = new Date((new Date(val.date)).setHours(0,0,0,0));
+        // date2.toUTCString();
+        // let offset = (new Date).getTimezoneOffset()/60;
+        // if (offset < 0)
+        //     offset=-offset;
+        let date = new Date(val.date);
         for (let i = 0; i < val.time.length; ++i) {
             delete val.time[i].startTime.second;
             delete val.time[i].endTime.second;
@@ -178,12 +177,12 @@ export class ModalAddActivityComponent implements OnInit {
 
         if (!this.activityId) {
             const activity: Activity = new Activity(0, projectData[0],
-                this.userId, val.description, date, timeLogs);
+                this.userId, val.description, date, timeLogs, this.qtyOfHours);
 
             this.activityService.createActivity(activity).subscribe(
                 result => {
                     const activity = new Activity(0, result.projectId, result.userId,
-                        result.description, result.date, result.timeLogs, this.qtyOfHours);
+                        result.description, result.date, result.timeLogs, result.duration);
 
                     this.newActivity.emit(activity);
                 }

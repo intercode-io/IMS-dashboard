@@ -92,7 +92,8 @@ export class ModalActivitiesFilterComponent implements OnInit {
 
     onChange(items){
         let res = this.selectedProjects.map(project => project.id );
-        this.activityService.announceProjectIdsFilter(res);
+        console.log("RES = ", res);
+        this.activityService.announceProjectIdsFilter([1,2,3]);
     }
 
 

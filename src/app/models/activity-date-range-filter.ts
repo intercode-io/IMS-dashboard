@@ -12,7 +12,11 @@ export class ActivityDateRangeFilter implements ActivityDateRangeFilterInterface
         if (offset < 0)
             offset=-offset;
         dateFrom.setHours(offset,0,0,0);
-        dateTo.setHours(offset,0,0,0);
+        dateTo.setHours(24 - offset,59,59,0);
+
+        console.log("ACTIVITY FILTER");
+        console.log("FROM: ", dateFrom);
+        console.log("TO: ", dateTo);
 
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;

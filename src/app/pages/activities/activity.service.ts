@@ -195,8 +195,9 @@ export class ActivityService {
 
 
     createActivity(activity: Activity) {
-        console.log(activity)
-        return this.commonHttp.post<Activity>('timelog/create/', activity)
+        const activity1 = {...activity, ProjectUserRoleId: 7};
+        console.log(activity1);
+        return this.commonHttp.post<Activity>('timelog/create/', activity1)
             .pipe(
                 catchError((err) => {
                     console.log("ERROR in createActivity:", err);
