@@ -4,7 +4,7 @@ import {ActivityService} from "../activity.service";
 import {ActivityDateRangeFilter} from "../../../models/activity-date-range-filter";
 import {combineLatest, Subscription} from "rxjs";
 import {ProjectService} from "../../projects/project.service";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {Project} from "../../../models/project";
 import {ActivatedRoute} from "@angular/router";
 import {filter, map} from "rxjs/operators";
@@ -17,7 +17,7 @@ import {filter, map} from "rxjs/operators";
 export class ModalActivitiesFilterComponent implements OnInit {
     private sub: Subscription = new Subscription();
 
-    private filterForm: FormGroup;
+    private dateFormControl: FormControl;
     projectList = [];
     selectedProjects: Project[];
     selectedItems$ = this.activityService.projectIdsFilter$;
@@ -32,6 +32,8 @@ export class ModalActivitiesFilterComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+
+        // this.dateFormControl = fb.
         // this.datarange = {
         //     "start": "2020-01-08T22:00:00.000Z",
         //     "end": "2020-01-15T22:00:00.000Z"
@@ -41,7 +43,6 @@ export class ModalActivitiesFilterComponent implements OnInit {
         //     }
         // );
         this.sub.add(this.listenForQueryParams());
-
         const projectListNextObs = this.projectService.getProjectList()
             .subscribe(p => {
                 this.projectService.announceProjectList(p);
@@ -55,6 +56,7 @@ export class ModalActivitiesFilterComponent implements OnInit {
 
         this.sub.add(projectListNextObs);
         this.sub.add(projectListObs);
+        this.sub.add(this.listenSelectedDates());
         this.sub.add(this.listenSelectedProjectsIds());
     }
 
@@ -91,9 +93,8 @@ export class ModalActivitiesFilterComponent implements OnInit {
     };
 
     onChange(items){
-        let res = this.selectedProjects.map(project => project.id );
-        console.log("RES = ", res);
-        this.activityService.announceProjectIdsFilter([1,2,3]);
+        let res = this.selectedProjects.map(project => <number>project.id );
+        this.activityService.announceProjectIdsFilter(res);
     }
 
 
@@ -128,6 +129,17 @@ export class ModalActivitiesFilterComponent implements OnInit {
                     const project = this.projectList.find(project => project.id == n);
                     if (project)
                         this.selectedProjects.push(project);
+                });
+            }
+        });
+    }
+
+    listenSelectedDates() {
+        return this.activityService.dateRangeFilter$.subscribe((dates) => {
+            if(dates) { // ? projectList is initialised later
+                this.dateFormControl = this.fb.control({
+                    start: dates.dateFrom,
+                    end: dates.dateTo,
                 });
             }
         });

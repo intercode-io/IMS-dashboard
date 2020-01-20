@@ -23,19 +23,19 @@ export class ActivityService {
     );
     public dateRangeFilter$: Observable<ActivityDateRangeFilter> = this.dateRangeFilter.asObservable();
     public announceDateRangeFilter = (dateRangeFilter: ActivityDateRangeFilter) => {
-        let offset = (new Date).getTimezoneOffset()/60;
-        if (offset < 0)
-            offset=-offset;
-        let dateStart = new Date(dateRangeFilter.dateFrom.setUTCHours(offset,0,0,0));
-        dateStart.toISOString();
-
-        offset = (new Date).getTimezoneOffset()/60;
-        if (offset < 0)
-            offset=-offset;
-        let dateEnd = new Date(dateRangeFilter.dateTo.setUTCHours(offset,0,0,0));
-        dateEnd.toISOString();
-
-        this.dateRangeFilter.next(new ActivityDateRangeFilter(dateStart, dateEnd));
+        // let offset = (new Date).getTimezoneOffset()/60;
+        // if (offset < 0)
+        //     offset=-offset;
+        // let dateStart = new Date(dateRangeFilter.dateFrom.setUTCHours(offset,0,0,0));
+        // dateStart.toISOString();
+        //
+        // offset = (new Date).getTimezoneOffset()/60;
+        // if (offset < 0)
+        //     offset=-offset;
+        // let dateEnd = new Date(dateRangeFilter.dateTo.setUTCHours(offset,0,0,0));
+        // dateEnd.toISOString();
+        // this.dateRangeFilter.next(new ActivityDateRangeFilter(dateStart, dateEnd));
+        this.dateRangeFilter.next(dateRangeFilter);
     };
 
     public filteredList$ = combineLatest(
@@ -90,7 +90,6 @@ export class ActivityService {
 
             const qpSnapshot = this.route.snapshot.queryParams;
             if (qpSnapshot.ids == undefined) {
-                ids = ["all"];  //default projects
                 let queryParams = {};
 
                 if (ids.length) {
@@ -129,9 +128,7 @@ export class ActivityService {
                         return new ActivityDateRangeFilter(dateStart, dateEnd);
                     }
                     catch (e) {
-                        console.log("ERROR IN FILTER");
-                        console.log(e);
-                        new ActivityDateRangeFilter(new Date(1900, 11, 11), new Date(2100, 11, 11))
+                        return new ActivityDateRangeFilter(new Date(1900, 11, 11), new Date(2100, 11, 11))
                     }
                 })
             ),
@@ -143,32 +140,42 @@ export class ActivityService {
         ).pipe(
             distinctUntilChanged()
         ).subscribe((dates: ActivityDateRangeFilter) => {
-            console.log("DATES: ", dates);
-            console.log("  DRF: ", this.dateRangeFilter.value);
-            console.log("RESULT =>  ", this.compareActivityDateRange(this.dateRangeFilter.value, dates));
-            if (!this.compareActivityDateRange(this.dateRangeFilter.value, dates)) {
-                this.announceDateRangeFilter(dates);
+            try {
+                console.log("DATES: ", dates);
+                console.log("  DRF: ", this.dateRangeFilter.value);
+                console.log("RESULT =>  ", this.compareActivityDateRange(this.dateRangeFilter.value, dates));
+                if (!this.compareActivityDateRange(this.dateRangeFilter.value, dates)) {
+                    this.announceDateRangeFilter(dates);
+                }
+
+                const qpSnapshot = this.route.snapshot.queryParams;
+
+                // if (!this.arraysEquals(qpSnapshot.ids.split('-'), ids)) {
+                let queryParams = {};
+                const dateFrom = [dates.dateFrom.getMonth()+1, dates.dateFrom.getDate(), dates.dateFrom.getFullYear()];
+                const dateTo = [dates.dateTo.getMonth()+1, dates.dateTo.getDate(), dates.dateTo.getFullYear()];
+
+                if (dateFrom && dateTo)
+                    queryParams = {...qpSnapshot, start: dateFrom.join('-'), end: dateTo.join('-')};
+
+                return this.router.navigate([], {relativeTo: this.route, queryParams});
             }
-
-            const qpSnapshot = this.route.snapshot.queryParams;
-
-            // if (!this.arraysEquals(qpSnapshot.ids.split('-'), ids)) {
-            let queryParams = {};
-            const dateFrom = [dates.dateFrom.getMonth(), dates.dateFrom.getDay(), dates.dateFrom.getFullYear()];
-            const dateTo = [dates.dateTo.getMonth(), dates.dateTo.getDay(), dates.dateTo.getFullYear()];
-
-            if (dateFrom && dateTo)
-                queryParams = {...qpSnapshot, start: dateFrom.join('-'), end: dateTo.join('-')};
-
-            return this.router.navigate([], {relativeTo: this.route, queryParams});
+            catch (e) {
+                console.log("ERRORRORROOR");
+                console.log(e);
+            }
         });
     }
 
     compareActivityDateRange(filter1: ActivityDateRangeFilter, filter2: ActivityDateRangeFilter) {
         if (filter1 == undefined || filter2 == undefined)
             return false;
-        if (+filter1.dateFrom === +filter2.dateFrom &&
-            +filter1.dateTo === +filter2.dateTo)
+        if (filter1.dateFrom.getFullYear() === filter2.dateFrom.getFullYear() &&
+            filter1.dateFrom.getMonth() === filter2.dateFrom.getMonth() &&
+            filter1.dateFrom.getDate() === filter2.dateFrom.getDate() &&
+            filter1.dateTo.getFullYear() === filter2.dateTo.getFullYear() &&
+            filter1.dateTo.getMonth() === filter2.dateTo.getMonth() &&
+            filter1.dateTo.getDate() === filter2.dateTo.getDate())
             // if (filter1.dateFrom.getTime() == filter2.dateFrom.getTime() &&
             //     filter1.dateTo.getTime() == filter2.dateTo.getTime())
             return true;
@@ -195,9 +202,8 @@ export class ActivityService {
 
 
     createActivity(activity: Activity) {
-        const activity1 = {...activity, ProjectUserRoleId: 7};
-        console.log(activity1);
-        return this.commonHttp.post<Activity>('timelog/create/', activity1)
+        console.log(activity)
+        return this.commonHttp.post<Activity>('timelog/create/', activity)
             .pipe(
                 catchError((err) => {
                     console.log("ERROR in createActivity:", err);

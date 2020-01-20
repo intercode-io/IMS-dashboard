@@ -4,6 +4,7 @@
     <div class="row custom-header">
         <div class="col-4">
             <input class="date-input"
+                   [formControl]="dateFormControl"
                    nbInput placeholder="Select Dates"
                    [nbDatepicker]="rangepicker">
             <nb-rangepicker (rangeChange)="onEventStartEndRange($event)"
