@@ -6,14 +6,14 @@ import {CommonHttpService} from "./common-http.service";
 @Injectable({providedIn: 'root'})
 export class AuthService {
 
-    private userSource: BehaviorSubject<User> = new BehaviorSubject<User>(new User(6));
+    private userSource: BehaviorSubject<User> = new BehaviorSubject<User>(new User(2, "Alex"));
     public user$: Observable<User> = this.userSource.asObservable();
 
     constructor() {
     }
 
     public announceUserChange(user: User) {
-        this.userSource.next(new User(2));
+        this.userSource.next(user);
     }
 
     //todo: Complete authentication service

@@ -8,7 +8,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 export class ColorPickerComponent {
     @Input() heading: string;
     @Input() color: string;
-    @Output() event: EventEmitter<string> = new EventEmitter<string>();
+    @Output() colorChanged: EventEmitter<string> = new EventEmitter<string>();
 
     public show = false;
     public defaultColors: string[] = [
@@ -48,7 +48,7 @@ export class ColorPickerComponent {
      */
     public changeColor(color: string): void {
         this.color = color;
-        this.event.emit(this.color);
+        this.colorChanged.emit(this.color);
         this.show = false;
     }
 
@@ -62,7 +62,7 @@ export class ColorPickerComponent {
 
         if (isValid) {
             this.color = color;
-            this.event.emit(this.color);
+            this.colorChanged.emit(this.color);
         }
     }
 

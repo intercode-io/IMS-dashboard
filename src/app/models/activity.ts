@@ -1,31 +1,30 @@
-export interface ActivityInterface {
+export class Activity {
     id: number;
+    projectUserRoleId: number;
     projectId: number;
-    // projectTitle: string;
-    userId: number;
-    description: string;
-    logs: string;
-    date: Date;
-    duration: number;
-}
-
-export class Activity implements ActivityInterface {
-    id: number;
-    projectId: number;
-    //projectTitle: string;
-    userId: number;
+    projectTitle: string;
+    userName: string;
     description: string;
     logs: string;
     date: Date;
     duration: number;
 
-
-    constructor(id: number, projectId: number, userId: number,
-                description: string = null, date=null, logs=null, duration=null) {
+    constructor(
+        id: number,
+        projectUserRoleId: number,
+        projectId: number,
+        projectTitle: string,
+        userName: string,
+        description: string = null,
+        date = null,
+        logs = null,
+        duration = null
+    ) {
         this.id = id;
+        this.projectUserRoleId = projectUserRoleId,
         this.projectId = projectId;
-        // this.projectTitle = projectTitle;
-        this.userId = userId;
+        this.projectTitle = projectTitle;
+        this.userName = userName;
         this.description = description;
         this.date = date;
         this.logs = logs;

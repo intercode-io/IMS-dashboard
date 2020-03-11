@@ -3,12 +3,20 @@
 <ng-template #modalAddActivity let-c="close" let-d="dismiss">
     <div>
         <nb-card>
-
             <!-- Modal Header -->
             <nb-card-header class="card-header">
-                <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    (click)="closeModal()"
+                >
+                    &times;
+                </button>
                 <div *ngIf="!activityId">
-                    <h1 class="mat-display-1 header-text">Add Manual Time Entry</h1>
+                    <h1 class="mat-display-1 header-text">
+                        Add Manual Time Entry
+                    </h1>
                 </div>
                 <div *ngIf="activityId">
                     <h1 class="mat-display-1 header-text">Update Time Entry</h1>
@@ -17,20 +25,28 @@
 
             <nb-card-body>
                 <div class="container" align-items="center">
-
                     <div class="panel-body" *ngIf="activityForm">
                         <form [formGroup]="activityForm">
-
-                            <!--Project name-->
-                            <!--                                <div class="offset-1">-->
                             <div class="row" align-items="center">
-                                <div for="projectNamesSelect" class="col-sm-3 offset-md-1 modal-text2">Project</div>
+                                <div
+                                    for="projectSelect"
+                                    class="col-sm-3 offset-md-1 modal-text2"
+                                >
+                                    Project
+                                </div>
                                 <div class="col-sm-6">
-                                    <select formControlName="projectName" id="projectNamesSelect"
-                                            class="description project-select">
-                                        <option class="description" *ngFor="let project of projectList"
-                                                [value]="[project.id, project.title]">
-                                            {{project.title}}
+                                    <select
+                                        formControlName="projectUserRole"
+                                        id="projectSelect"
+                                        class="description project-select"
+                                    >
+                                        <option
+                                            class="description"
+                                            *ngFor="let projectUserRole of projectUserRoles"
+                                            [ngValue]="projectUserRole"
+                                        >
+                                            <!-- Modify this title display after role logic implementation -->
+                                            {{ projectUserRole.project.title }}
                                         </option>
                                     </select>
                                 </div>
@@ -42,8 +58,12 @@
                                 </div>
 
                                 <div class="col-sm-6">
-                                    <input formControlName="description" id="description" class="description"
-                                           type="text">
+                                    <input
+                                        formControlName="description"
+                                        id="description"
+                                        class="description"
+                                        type="text"
+                                    />
                                 </div>
                             </div>
 
@@ -52,52 +72,78 @@
                                     <p>Date:</p>
                                 </div>
                                 <div class="col-sm-6">
-                                    <input nbInput
-                                           placeholder="Form Picker"
-                                           formControlName="date"
-                                           [nbDatepicker]="formpicker">
+                                    <input
+                                        nbInput
+                                        placeholder="Form Picker"
+                                        formControlName="date"
+                                        [nbDatepicker]="formpicker"
+                                    />
                                     <nb-datepicker #formpicker></nb-datepicker>
                                 </div>
                             </div>
-                            <br>
+                            <br />
 
                             <!--Hours-->
                             <div class="row" align-items="center">
-                                <div class="col-sm-2 offset-md-1 modal-text2">
+                                <div class="col-sm-3 offset-md-1 modal-text2">
                                     <p>Hours:</p>
                                 </div>
                                 <div class="col-sm-4">
-                                    {{qtyOfHours}}
+                                    {{ qtyOfHours }}
                                 </div>
-                                <hr>
+                                <hr />
                             </div>
 
                             <!--Time selector-->
 
-                            <br>
-                            <hr>
-                            <div class="row">
+                            <br />
+                            <hr />
+                            <div class="row justify-content-center">
                                 <div class="form-group">
-                                    <div class="col-md-offset-2 col-md-12">
-                                        <button type="button" class="btn btn-primary" (click)="addTimeGroupClick()">
+                                    <div>
+                                        <button
+                                            type="button"
+                                            class="btn btn-primary"
+                                            (click)="addTimeGroupClick()"
+                                        >
                                             Add Log
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-
                             <div>
-                                <div formArrayName="time"
-                                     *ngFor="let time of activityForm.get('time').controls; let i = index">
+                                <div
+                                    formArrayName="time"
+                                    *ngFor="
+                                        let time of activityForm.get('time')
+                                            .controls;
+                                        let i = index
+                                    "
+                                >
                                     <div [formGroupName]="i">
                                         <div class="row">
                                             <div class="col-sm-2">
                                                 <div class="row">
-                                                    <div *ngIf="activityForm.get('time').length>1">
-                                                        <button type="button" class="btn btn-danger"
-                                                                (click)="deleteTimeButtonClick(i)">
-                                                            <nb-icon icon="trash-outline"></nb-icon>
+                                                    <div
+                                                        *ngIf="
+                                                            activityForm.get(
+                                                                'time'
+                                                            ).length > 1
+                                                        "
+                                                    >
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-danger"
+                                                            (click)="
+                                                                deleteTimeButtonClick(
+                                                                    i
+                                                                )
+                                                            "
+                                                        >
+                                                            <nb-icon
+                                                                icon="trash-outline"
+                                                            ></nb-icon>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -112,10 +158,17 @@
                                             </div>
 
                                             <div class="col-sm-4">
-                                                <ngb-timepicker formControlName="startTime"
-                                                                id="startTime"
-                                                                [ngModel]="i.startTime"
-                                                                (ngModelChange)="startTimeUpdate($event,i)">
+                                                <ngb-timepicker
+                                                    formControlName="startTime"
+                                                    id="startTime"
+                                                    [ngModel]="i.startTime"
+                                                    (ngModelChange)="
+                                                        startTimeUpdate(
+                                                            $event,
+                                                            i
+                                                        )
+                                                    "
+                                                >
                                                 </ngb-timepicker>
                                             </div>
 
@@ -124,10 +177,14 @@
                                             </div>
 
                                             <div class="col-sm-4">
-                                                <ngb-timepicker formControlName="endTime"
-                                                                id="endTime"
-                                                                [ngModel]="i.endTime"
-                                                                (ngModelChange)="endTimeUpdate($event,i)">
+                                                <ngb-timepicker
+                                                    formControlName="endTime"
+                                                    id="endTime"
+                                                    [ngModel]="i.endTime"
+                                                    (ngModelChange)="
+                                                        endTimeUpdate($event, i)
+                                                    "
+                                                >
                                                 </ngb-timepicker>
                                             </div>
                                         </div>
@@ -142,27 +199,41 @@
             <nb-card-footer>
                 <div class="row" align-items="center">
                     <div class="col-4 offset-1">
-                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal"
-                                (click)="closeModal()">Cancel
+                        <button
+                            type="button"
+                            class="btn btn-outline-danger"
+                            data-dismiss="modal"
+                            (click)="closeModal()"
+                        >
+                            Cancel
                         </button>
                     </div>
 
                     <div class="col-4 offset-3">
                         <div *ngIf="!activityId">
-                            <button type="submit" class="btn btn-success" data-dismiss="modal"
-                                    (click)="submitCreateActivityForm();">Submit
+                            <button
+                                type="submit"
+                                class="btn btn-success"
+                                data-dismiss="modal"
+                                (click)="submitCreateActivityForm()"
+                            >
+                                Submit
                             </button>
                         </div>
                         <div *ngIf="activityId">
-                            <button type="submit" class="btn btn-success" data-dismiss="modal"
-                                    (click)="submitCreateActivityForm();">Update
+                            <button
+                                type="submit"
+                                class="btn btn-success"
+                                data-dismiss="modal"
+                                (click)="submitCreateActivityForm()"
+                            >
+                                Update
                             </button>
                         </div>
                         <!--                        [disabled]="!activityForm.valid"-->
                     </div>
                 </div>
             </nb-card-footer>
-
         </nb-card>
     </div>
 </ng-template>

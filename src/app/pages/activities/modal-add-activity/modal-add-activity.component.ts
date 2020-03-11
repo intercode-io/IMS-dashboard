@@ -1,25 +1,14 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
-import {FormControl, FormGroup, Validators, FormArray, FormBuilder, AbstractControl} from '@angular/forms';
-import {MatDatepickerInputEvent} from '@angular/material/datepicker';
-import {ActivityService} from "../../../services/activity.service";
-import {ProjectService} from "../../../services/project.service";
-import {AuthService} from "../../../services/auth.service";
-import {Project} from "../../../models/project";
-// import {Time} from "../../../models/Time";
-import {Activity, ActivityInterface} from "../../../models/activity";
-import {NgbModal, NgbModalConfig, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
-import {start} from "repl";
-import {Time} from "@angular/common";
-import {validateEndTime, validateStartTime} from "../validators/time.validators";
-import {NgbTime} from "@ng-bootstrap/ng-bootstrap/timepicker/ngb-time";
-import {logger} from "codelyzer/util/logger";
-import {DomEvent} from "leaflet";
-import off = DomEvent.off;
-// import * as moment from 'moment';
-// import {Input, DoCheck, KeyValueDiffers} from '@angular/core';
-// import {control} from "leaflet";
-// import { PermitCard } from '../permit-card';
-const moment = require('../../../../../node_modules/moment/moment.js');
+import { User } from './../../../models/user';
+import { ProjectUserRole } from './../../../models/project-user-role';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { ActivityService } from "../../../services/activity.service";
+import { ProjectService } from "../../../services/project.service";
+import { AuthService } from "../../../services/auth.service";
+import { Activity } from "../../../models/activity";
+import { NgbModal, NgbModalConfig, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { validateEndTime, validateStartTime } from "../validators/time.validators";
 
 @Component({
     selector: 'modal-add-activity',
@@ -29,26 +18,25 @@ const moment = require('../../../../../node_modules/moment/moment.js');
 })
 
 export class ModalAddActivityComponent implements OnInit {
-    protected projectList = [];
-    protected userId: number;
+    public qtyOfHours: any;
+    public err: boolean;
+    public activityId: number;
+
+    protected projectUserRoles: ProjectUserRole[];
+    protected user: User;
     protected date: MatDatepickerInputEvent<Date>;
     protected activityForm: FormGroup;
-    qtyOfHours: any;
-    err: boolean;
-    activityId: number;
+
+    public activityToUpdate: Activity;
 
     dialogRef: NgbModalRef;
 
-    @ViewChild("modalAddActivity", {static: false})
+    @ViewChild("modalAddActivity", { static: false })
     modalAddActivity: ElementRef;
 
-
-    @Output() public newActivity: EventEmitter<ActivityInterface> = new EventEmitter<ActivityInterface>();
-
-
     constructor(
-        protected  activityService: ActivityService,
-        protected  projectService: ProjectService,
+        protected activityService: ActivityService,
+        protected projectService: ProjectService,
         protected authService: AuthService,
         private modalService: NgbModal,
         private config: NgbModalConfig,
@@ -60,23 +48,22 @@ export class ModalAddActivityComponent implements OnInit {
 
     open(data = null) {
         this.dialogRef = this.modalService.open(this.modalAddActivity);
+        this.activityToUpdate = null;
+
         if (data) {
+            this.activityToUpdate = data as Activity;
             this.activityId = data.id;
-            const projectName = data.projectId.toString().concat(',', data.projectTitle);
             this.activityForm.patchValue({
-                projectName: [projectName],
+                projectUserRole: this.projectUserRoles.find(pur => pur.id === data.projectUserRoleId),
                 description: data.description,
                 date: new Date(data.date),
             });
 
             const logs = JSON.parse(data.logs);
-            let id  = 0;
+            let id = 0;
             for (let log of logs) {
                 (<FormArray>this.activityForm.get('time')).at(id).patchValue(log);
-                // let time = this.activityForm.get('time').value[this.activityForm.get('time').value.length-1];
-                // time = log.startTime;
-                // time.endTime = log.endTime;
-                if (log != logs[logs.length-1]){
+                if (log != logs[logs.length - 1]) {
                     this.addTimeGroupClick();
                     ++id;
                 }
@@ -85,16 +72,19 @@ export class ModalAddActivityComponent implements OnInit {
     }
 
     closeModal(data = null) {
-        this.dialogRef.close(data);
+        if (this.dialogRef) {
+            this.dialogRef.close(data);
+        }
     }
 
     ngOnInit() {
-        this.authService.user$.subscribe(r => {
-            this.userId = r.id;
+        const userSub = this.authService.user$.subscribe(res => {
+            this.user = res;
         });
-        this.getProjects();
+
+        this.getProjectSelectData();
         this.activityForm = this.fb.group({
-            projectName: [''],
+            projectUserRole: [{}],
             date: [new Date()],
             description: [''],
             time: this.fb.array([
@@ -105,7 +95,7 @@ export class ModalAddActivityComponent implements OnInit {
         this.activityForm.valueChanges.subscribe((data) => {
             let difference = 0;
             for (let time of (<FormArray>this.activityForm.get('time')).value) {
-                try {
+                if (time.startTime && time.endTime) {
                     if (time.endTime.hour > time.startTime.hour) {
                         difference += (time.endTime.hour - time.startTime.hour) * 60;
                         const minutes = time.endTime.minute - time.startTime.minute;
@@ -115,8 +105,6 @@ export class ModalAddActivityComponent implements OnInit {
                     } else {
                         difference += time.endTime.minute - time.startTime.minute;
                     }
-                } catch (e) {
-                    console.error("Not all parameters have been initialized yet: ", e);
                 }
             }
             this.qtyOfHours = difference;
@@ -144,15 +132,7 @@ export class ModalAddActivityComponent implements OnInit {
     //TODO change data access
     submitCreateActivityForm(): void {
         const val = this.activityForm.value;
-        //.setHours(0,0,0,0).toISOString();
-        const projectData = val.projectName[0].split(',', 2);
-        let date2 = new Date((new Date(val.date)).setHours(0,0,0,0));
-        date2.toUTCString();
-        let offset = (new Date).getTimezoneOffset()/60;
-        if (offset < 0)
-            offset=-offset;
-        let date = new Date(val.date.setUTCHours(offset,0,0,0));
-        date.toISOString();
+
         for (let i = 0; i < val.time.length; ++i) {
             delete val.time[i].startTime.second;
             delete val.time[i].endTime.second;
@@ -161,42 +141,38 @@ export class ModalAddActivityComponent implements OnInit {
         const timeLogs = JSON.stringify(val.time);
 
         if (!this.activityId) {
-            const activity: Activity = new Activity(0, projectData[0],
-                this.userId, val.description, date, timeLogs);
+            const activity: Activity = new Activity(0, val.projectUserRole.id, val.projectUserRole.project.id, val.projectUserRole.project.title,
+                this.user.userName, val.description, val.date, timeLogs, this.qtyOfHours);
 
             this.activityService.createActivity(activity).subscribe(
                 result => {
-                    const activity = new Activity(0, result.projectId, result.userId,
-                        result.description, result.date, result.timeLogs, this.qtyOfHours);
+                    const activity = result as Activity;
 
-                    this.newActivity.emit(activity);
+                    this.activityService.announceNewActivity(activity);
                 }
             );
         } else {
-            const activity: Activity = new Activity(this.activityId, parseInt(projectData[0]),
-                this.userId, val.description, date, timeLogs, this.qtyOfHours);
+            const activity: Activity = new Activity(this.activityId, val.projectUserRole.id, val.projectUserRole.project.id, val.projectUserRole.project.title,
+                this.user.userName, val.description, val.date, timeLogs, this.qtyOfHours);
 
             this.activityService.updateActivity(activity).subscribe(
                 result => {
-                    const activity = new Activity(result.id, result.projectId, result.userId,
-                        result.description, result.date, result.timeLogs, result.duration);
+                    const activity = result as Activity;
 
-                    this.newActivity.emit(activity);
+                    this.activityService.announceNewActivity(activity);
                 }
             );
         }
         this.closeModal(val.projectName);
-
     }
 
-    getProjects() {
-        this.projectService.getProjectList()
+    getProjectSelectData() {
+        this.projectService.getProjectUserRoleList()
             .subscribe(
                 result => {
-                    this.projectList = result.map(
-                        item => new Project(item.id, item.title)
-                    );
-                    this.activityForm.controls.projectName.patchValue(this.projectList[0].id);
+                    this.projectUserRoles = result;
+
+                    this.activityForm.controls.projectUserRole.patchValue(this.projectUserRoles[0]);
                 }
             );
     }
