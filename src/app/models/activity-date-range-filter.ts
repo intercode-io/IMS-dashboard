@@ -1,9 +1,4 @@
-interface ActivityDateRangeFilterInterface {
-  dateFrom: Date;
-  dateTo: Date;
-}
-
-export class ActivityDateRangeFilter implements ActivityDateRangeFilterInterface{
+export class ActivityDateRangeFilter {
   dateFrom: Date;
   dateTo: Date;
 

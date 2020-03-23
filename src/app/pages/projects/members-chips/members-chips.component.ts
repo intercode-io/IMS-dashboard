@@ -28,8 +28,6 @@ export class MembersChipsComponent implements ViewCell, OnInit {
     ];
 
     ngOnInit() {
-
-        console.log('value:', this.value);
         this.renderValue = this.value.toString().toUpperCase();
 
         // creating form

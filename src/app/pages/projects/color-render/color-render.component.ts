@@ -18,8 +18,6 @@ export class ColorRenderComponent implements ViewCell, OnInit {
     }
 
     ngOnInit() {
-        console.log('value color:', this.value);
-        // if (.hasOwnProperty('currentValue')) {
         if (typeof this.value == 'string' || typeof this.value == 'number') {
             this.renderValue = this.value.toString();
         }
