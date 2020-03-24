@@ -1,20 +1,72 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {User} from "../models/user";
-import {CommonHttpService} from "./common-http.service";
+import { Injectable } from "@angular/core";
+import { User } from "../models/user";
+import { CommonHttpService } from "./common-http.service";
+import { AuthService as SocialAuthService, GoogleLoginProvider } from "angularx-social-login";
+import { Router } from "@angular/router";
+import { NbToastrService, NbGlobalPhysicalPosition, NbToastrConfig } from "@nebular/theme";
+import { catchError, map, tap } from "rxjs/operators";
+import { of } from "rxjs";
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: "root" })
 export class AuthService {
+    public user: User = null;
 
-    private userSource: BehaviorSubject<User> = new BehaviorSubject<User>(new User(2, "Alex"));
-    public user$: Observable<User> = this.userSource.asObservable();
+    constructor(
+        private commonHttp: CommonHttpService,
+        private socialAuthService: SocialAuthService,
+        private toastrService: NbToastrService,
+        private router: Router
+    ) {}
 
-    constructor() {
+    public loginWithGoogle(returnUrl: string) {
+        this.socialAuthService
+            .signIn(GoogleLoginProvider.PROVIDER_ID)
+            .then(externalUser => {
+                this.commonHttp
+                    .get<User>(
+                        `auth/googleLogin?googleIdToken=${externalUser.idToken}`
+                    )
+                    .pipe(
+                        catchError(({ error }) => {
+                            this.showErrorToastr(error.message);
+
+                            return of(null);
+                        })
+                    )
+                    .subscribe(user => {
+                        if (user) {
+                            this.user = user;
+
+                            localStorage.setItem("token", this.user.token);
+
+                            this.router.navigate([returnUrl ? returnUrl : "pages"]);
+                        }
+                    });
+            });
     }
 
-    public announceUserChange(user: User) {
-        this.userSource.next(user);
+    public logout() {
+        this.commonHttp.get("auth/logout").subscribe(() => {
+            this.user = null;
+
+            localStorage.removeItem("token");
+            this.router.navigate(["login"]);
+        });
     }
 
-    //todo: Complete authentication service
+    public getCurrentUser() {
+        return this.commonHttp.get<User>("auth/getCurrentUser").pipe(
+            tap(user => this.user = user),
+        );
+    }
+
+    private showErrorToastr(message) {
+        const toastrConfig = {
+            status: "danger",
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            duration: 5000
+        };
+
+        this.toastrService.show(message,"Authentication Error", toastrConfig as NbToastrConfig);
+    }
 }

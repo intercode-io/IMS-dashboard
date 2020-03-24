@@ -1,0 +1,21 @@
+<nb-layout>
+    <nb-layout-column>
+        <nb-card>
+            <nb-card-body>
+                <nb-auth-block>
+                    <h6 id="title" class="title text-muted">Log in with your corporate google account.</h6>
+                    <button
+                        (click)="googleLogin()"
+                        type="button"
+                        class="google-button"
+                    >
+                        <span class="google-button__icon">
+                            <div class="google-icon"></div>
+                        </span>
+                        <span class="google-button__text">LOG IN</span>
+                    </button>
+                </nb-auth-block>
+            </nb-card-body>
+        </nb-card>
+    </nb-layout-column>
+</nb-layout>

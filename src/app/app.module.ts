@@ -6,7 +6,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgModule} from '@angular/core';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {CoreModule} from './@core/core.module';
 import {ThemeModule} from './@theme/theme.module';
 import {AppComponent} from './app.component';
@@ -22,6 +22,9 @@ import {
 } from '@nebular/theme';
 import {Ng2SmartTableModule} from "ng2-smart-table";
 import { MySpinnerComponent } from './extensions/my-spinner/my-spinner.component';
+import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angularx-social-login"
+import { JwtInterceptor } from './helpers/jwt.interceptor';
+import { environment } from '../environments/environment';
 
 @NgModule({
     declarations: [
@@ -45,6 +48,19 @@ import { MySpinnerComponent } from './extensions/my-spinner/my-spinner.component
         }),
         CoreModule.forRoot(),
         Ng2SmartTableModule,
+        SocialLoginModule,
+    ],
+    providers: [
+        {
+            provide: AuthServiceConfig,
+            useFactory: () => {
+                return new AuthServiceConfig([{
+                    id: GoogleLoginProvider.PROVIDER_ID,
+                    provider: new GoogleLoginProvider(environment.googleClientId)
+                }])
+            },
+        },
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     ],
     bootstrap: [
         AppComponent,

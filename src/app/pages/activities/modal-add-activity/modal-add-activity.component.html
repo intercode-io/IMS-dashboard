@@ -36,17 +36,16 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <select
-                                        formControlName="projectUserRole"
+                                        formControlName="project"
                                         id="projectSelect"
                                         class="description project-select"
                                     >
                                         <option
                                             class="description"
-                                            *ngFor="let projectUserRole of projectUserRoles"
-                                            [ngValue]="projectUserRole"
+                                            *ngFor="let project of projects"
+                                            [ngValue]="project"
                                         >
-                                            <!-- Modify this title display after role logic implementation -->
-                                            {{ projectUserRole.project.title }}
+                                            {{ project.title }}
                                         </option>
                                     </select>
                                 </div>

@@ -3,7 +3,7 @@ import {CommonHttpService} from "./common-http.service";
 import {Activity} from "../models/activity";
 import {ActivityFilter} from "../models/activity-filter";
 import {BehaviorSubject, Observable, of, combineLatest} from "rxjs";
-import {catchError, first, switchMap} from "rxjs/operators";
+import {catchError, first, switchMap, filter} from "rxjs/operators";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivityDateRangeFilter} from "../models/activity-date-range-filter";
 import { EventEmitter } from 'events';
@@ -20,7 +20,9 @@ export class ActivityService {
 
     public projectIdsFilter$: Observable<number[]> = this.projectIdsFilter.asObservable();
     public dateRangeFilter$: Observable<ActivityDateRangeFilter> = this.dateRangeFilter.asObservable();
-    public newActivity$: Observable<Activity> = this.newActivity.asObservable();
+    public newActivity$: Observable<Activity> = this.newActivity.asObservable().pipe(
+        filter(data => data !== null)
+    );
 
     public filteredList$ = combineLatest(
         this.projectIdsFilter$,

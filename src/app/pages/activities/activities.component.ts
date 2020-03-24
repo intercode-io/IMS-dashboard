@@ -34,11 +34,13 @@ export class ActivitiesComponent implements OnInit {
 
         const newActivitySub = this.activityService.newActivity$
             .subscribe(activity => {
-                if (this.modalAddActivity && this.modalAddActivity.activityToUpdate) {
-                    this.updateActivity(activity)       //TODO: Temporary solution. Needs to be updated later.
-                }
-                else {
-                    this.addActivity(activity)
+                if (this.modalAddActivity) {
+                    if (this.modalAddActivity.activityToUpdate) {
+                        this.updateActivity(activity)       //TODO: Temporary solution. Needs to be updated later.
+                    }
+                    else {
+                        this.addActivity(activity)
+                    }
                 }
             })
 

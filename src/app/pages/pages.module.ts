@@ -17,7 +17,6 @@ import {MiscellaneousModule} from './miscellaneous/miscellaneous.module';
 import {ProjectsComponent} from './projects/projects.component';
 import {ModalAddProjectComponent} from './projects/modal-add-project/modal-add-project.component';
 import {FormAddProjectComponent} from './projects/modal-add-project/form-add-project/form-add-project.component';
-import {AuthService} from "../services/auth.service";
 import {ProjectService} from "../services/project.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MatTableModule} from "@angular/material/table";
@@ -78,7 +77,6 @@ import {ActivitiesModule} from "./activities/activities.module";
         PagesComponent,
     ],
     providers: [
-        AuthService,
         ProjectService,
         MatSnackBar,
         NgxSmartModalService,

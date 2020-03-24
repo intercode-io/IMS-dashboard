@@ -1,8 +1,8 @@
 export class Activity {
     id: number;
-    projectUserRoleId: number;
     projectId: number;
     projectTitle: string;
+    userId: number;
     userName: string;
     description: string;
     logs: string;
@@ -11,9 +11,9 @@ export class Activity {
 
     constructor(
         id: number,
-        projectUserRoleId: number,
         projectId: number,
         projectTitle: string,
+        userId: number,
         userName: string,
         description: string = null,
         date = null,
@@ -21,9 +21,9 @@ export class Activity {
         duration = null
     ) {
         this.id = id;
-        this.projectUserRoleId = projectUserRoleId,
         this.projectId = projectId;
         this.projectTitle = projectTitle;
+        this.userId = userId;
         this.userName = userName;
         this.description = description;
         this.date = date;

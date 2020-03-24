@@ -1,5 +1,3 @@
-import { User } from './../../../models/user';
-import { ProjectUserRole } from './../../../models/project-user-role';
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
@@ -9,6 +7,7 @@ import { AuthService } from "../../../services/auth.service";
 import { Activity } from "../../../models/activity";
 import { NgbModal, NgbModalConfig, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { validateEndTime, validateStartTime } from "../validators/time.validators";
+import { Project } from '../../../models/project';
 
 @Component({
     selector: 'modal-add-activity',
@@ -22,8 +21,7 @@ export class ModalAddActivityComponent implements OnInit {
     public err: boolean;
     public activityId: number;
 
-    protected projectUserRoles: ProjectUserRole[];
-    protected user: User;
+    protected projects: Project[];
     protected date: MatDatepickerInputEvent<Date>;
     protected activityForm: FormGroup;
 
@@ -54,7 +52,7 @@ export class ModalAddActivityComponent implements OnInit {
             this.activityToUpdate = data as Activity;
             this.activityId = data.id;
             this.activityForm.patchValue({
-                projectUserRole: this.projectUserRoles.find(pur => pur.id === data.projectUserRoleId),
+                project: this.projects.find(p => p.id === data.projectId),
                 description: data.description,
                 date: new Date(data.date),
             });
@@ -78,13 +76,9 @@ export class ModalAddActivityComponent implements OnInit {
     }
 
     ngOnInit() {
-        const userSub = this.authService.user$.subscribe(res => {
-            this.user = res;
-        });
-
         this.getProjectSelectData();
         this.activityForm = this.fb.group({
-            projectUserRole: [{}],
+            project: [{}],
             date: [new Date()],
             description: [''],
             time: this.fb.array([
@@ -139,10 +133,11 @@ export class ModalAddActivityComponent implements OnInit {
         }
 
         const timeLogs = JSON.stringify(val.time);
+        const user = this.authService.user;
 
         if (!this.activityId) {
-            const activity: Activity = new Activity(0, val.projectUserRole.id, val.projectUserRole.project.id, val.projectUserRole.project.title,
-                this.user.userName, val.description, val.date, timeLogs, this.qtyOfHours);
+            const activity: Activity = new Activity(0, val.project.id, val.project.title, user.id,
+                user.firstName, val.description, val.date, timeLogs, this.qtyOfHours);
 
             this.activityService.createActivity(activity).subscribe(
                 result => {
@@ -152,8 +147,8 @@ export class ModalAddActivityComponent implements OnInit {
                 }
             );
         } else {
-            const activity: Activity = new Activity(this.activityId, val.projectUserRole.id, val.projectUserRole.project.id, val.projectUserRole.project.title,
-                this.user.userName, val.description, val.date, timeLogs, this.qtyOfHours);
+            const activity: Activity = new Activity(this.activityId, val.project.id, val.project.title, user.id,
+                user.firstName, val.description, val.date, timeLogs, this.qtyOfHours);
 
             this.activityService.updateActivity(activity).subscribe(
                 result => {
@@ -167,12 +162,12 @@ export class ModalAddActivityComponent implements OnInit {
     }
 
     getProjectSelectData() {
-        this.projectService.getProjectUserRoleList()
+        this.projectService.getProjects()
             .subscribe(
                 result => {
-                    this.projectUserRoles = result;
+                    this.projects = result;
 
-                    this.activityForm.controls.projectUserRole.patchValue(this.projectUserRoles[0]);
+                    this.activityForm.controls.project.patchValue(this.projects[0]);
                 }
             );
     }
