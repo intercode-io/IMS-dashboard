@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ColorPickerModule} from "@syncfusion/ej2-angular-inputs";
-import {MembersChipsComponent} from "./members-chips/members-chips.component";
 import {ColorRenderComponent} from "./color-render/color-render.component";
 import {ColorEditorRenderComponent} from "./color-editor-render/color-editor-render.component";
 import {ColorPickerComponent} from "./color-picker/color-picker.component";
@@ -15,7 +14,13 @@ import {FormAddProjectComponent} from "./modal-add-project/form-add-project/form
 import {TagInputModule} from "ngx-chips";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {Ng2SmartTableModule} from "ng2-smart-table";
-import {NbCardModule} from "@nebular/theme";
+import {NbCardModule, NbListModule, NbUserModule, NbIconModule} from "@nebular/theme";
+import {MatAutocompleteModule} from '@angular/material/autocomplete'
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ProjectMembersComponent } from './modal-add-project/form-add-project/project-members/project-members.component';
+import { ProjectMembersViewCell } from './modal-add-project/form-add-project/project-members/project-members-view-cell.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
     imports: [
@@ -26,16 +31,24 @@ import {NbCardModule} from "@nebular/theme";
         Ng2SmartTableModule,
         NbCardModule,
         NgbTabsetModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDialogModule,
+        NbListModule,
+        NbUserModule,
+        NbIconModule,
     ],
     declarations: [
         ColorPickerComponent,
         ColorRenderComponent,
         ColorEditorRenderComponent,
-        MembersChipsComponent,
         ProjectsComponent,
         ModalAddProjectComponent,
         FormAddProjectComponent,
+        ProjectMembersComponent,
+        ProjectMembersViewCell
     ],
     providers: [
         ProjectService,
@@ -49,9 +62,10 @@ import {NbCardModule} from "@nebular/theme";
         ColorPickerComponent
     ],
     entryComponents: [
-        MembersChipsComponent,
         ColorRenderComponent,
         ColorEditorRenderComponent,
+        ProjectMembersViewCell,
+        ProjectMembersComponent,
     ]
 })
 export class ProjectsModule {

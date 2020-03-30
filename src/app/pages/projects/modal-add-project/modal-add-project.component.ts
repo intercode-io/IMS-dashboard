@@ -16,6 +16,8 @@ export class ModalAddProjectComponent {
 
     public dialogRef: NgbModalRef;
 
+    public editData: Project;
+
     @ViewChild("modalAddProject", { static: false })
     modalAddProject: ElementRef;
 
@@ -42,8 +44,10 @@ export class ModalAddProjectComponent {
         }
     }
 
-    open() {
+    open(editData = null) {
         this.dialogRef = this.modalService.open(this.modalAddProject);
+
+        this.editData = editData;
     }
 
     closeModal(data = null) {

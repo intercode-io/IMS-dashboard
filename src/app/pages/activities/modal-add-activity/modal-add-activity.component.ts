@@ -162,7 +162,7 @@ export class ModalAddActivityComponent implements OnInit {
     }
 
     getProjectSelectData() {
-        this.projectService.getProjects()
+        this.projectService.getUserProjects()
             .subscribe(
                 result => {
                     this.projects = result;
