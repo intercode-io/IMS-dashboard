@@ -1,4 +1,3 @@
-import { ProjectUserRole } from './../models/project-user-role';
 import { Injectable } from '@angular/core';
 import { Project } from "../models/project";
 import { CommonHttpService } from "./common-http.service";
@@ -32,8 +31,8 @@ export class ProjectService {
     ) {
     }
 
-    getProjectUserRoleList() {
-        return this.commonHttp.get<ProjectUserRole[]>('project/getList/')
+    getProjects() {
+        return this.commonHttp.get<Project[]>('project/getList/')
             .pipe(
                 catchError((err) => {
                     this.snackBar.open("An error occured while trying to load your projects",

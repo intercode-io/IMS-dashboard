@@ -23,10 +23,8 @@ export class ModalActivitiesFilterComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        const projectListNextObs = this.projectService.getProjectUserRoleList()
-            .subscribe(projectUserRoles => {
-                const projects = projectUserRoles.map(pur => pur.project);
-
+        const projectListNextObs = this.projectService.getProjects()
+            .subscribe(projects => {
                 this.projectService.announceProjectList(projects);
             });
 

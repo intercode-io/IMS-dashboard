@@ -52,6 +52,7 @@
     "angular2-chartjs": "0.4.1",
     "angular2-multiselect-dropdown": "^4.6.3",
     "angular2-toaster": "7.0.0",
+    "angularx-social-login": "^2.2.1",
     "bootstrap": "4.3.1",
     "chart.js": "2.8.0",
     "ckeditor": "4.7.3",

@@ -41,10 +41,8 @@ export class ProjectsComponent implements OnInit {
     }
 
     addSubscriptions() {
-        const getProjectsObsSub = this.projectService.getProjectUserRoleList()
-            .subscribe(projectUserRoles => {
-                const projects = projectUserRoles.map(pur => pur.project);
-
+        const getProjectsObsSub = this.projectService.getProjects()
+            .subscribe(projects => {
                 this.projectService.announceProjectList(projects);
             });
 
