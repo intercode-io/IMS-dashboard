@@ -5,10 +5,8 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { Project } from "../../models/project";
 import { ProjectService } from "../../services/project.service";
 import { LocalDataSource } from "ng2-smart-table";
-import { MembersChipsComponent } from "./members-chips/members-chips.component";
-import { ColorRenderComponent } from "./color-render/color-render.component";
-import { ColorEditorRenderComponent } from "./color-editor-render/color-editor-render.component";
 import { ConfigurationConstants } from '../../constants/configuration-constants';
+import { ProjectMembersViewCell } from './modal-add-project/form-add-project/project-members/project-members-view-cell.component';
 
 @Component({
     selector: 'ngx-app-projects',
@@ -26,7 +24,7 @@ export class ProjectsComponent implements OnInit {
 
     constructor(
         private projectService: ProjectService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
     ) {
     }
 
@@ -53,8 +51,17 @@ export class ProjectsComponent implements OnInit {
                 }
             });
 
-        const newProjectSub = this.projectService.newProject$.subscribe(project => {
-            this.dataSource.append(project);
+        const newProjectSub = this.projectService.newProject$.subscribe(newProject => {
+            if (this.modalAddProject) {
+                const projectToUpdate = this.modalAddProject.editData;
+
+                if (projectToUpdate) {
+                    this.updateProject(projectToUpdate, newProject);
+                }
+                else {
+                    this.addProject(newProject);
+                }
+            }
         })
 
         this.sub.add(getProjectsObsSub);
@@ -62,20 +69,12 @@ export class ProjectsComponent implements OnInit {
         this.sub.add(newProjectSub);
     }
 
-    open() {
-        this.modalAddProject.open();
-        this.modalAddProject.dialogRef.result.then(result => {
-            if (result) {
-                this.snackBar.open(`Project "${result.title}" created.`, '', ConfigurationConstants.DEFAULT_MATSNACKBACK_CONFIGURATION);
-            }
-        })
-    }
-
     settings = {
+        mode: "external",
         actions: {
             edit: true,
             delete: true,
-            add: true,
+            add: false,
             position: 'right',
         },
 
@@ -83,12 +82,6 @@ export class ProjectsComponent implements OnInit {
             display: true,
         },
 
-        add: {
-            addButtonContent: '<i class="nb-plus"></i>',
-            createButtonContent: '<i class="nb-checkmark"></i>',
-            cancelButtonContent: '<i class="nb-close"></i>',
-            confirmCreate: true
-        },
         edit: {
             editButtonContent: '<i class="nb-edit"></i>',
             saveButtonContent: '<i class="nb-checkmark"></i>',
@@ -108,46 +101,21 @@ export class ProjectsComponent implements OnInit {
             members: {
                 title: 'Members',
                 type: 'custom',
-                renderComponent: MembersChipsComponent,
-
-            },
-            color: {
-                title: 'Color',
-                type: 'custom',
-                renderComponent: ColorRenderComponent,
-
-                editor: {
-                    type: 'custom',
-                    component: ColorEditorRenderComponent,
-                },
+                renderComponent: ProjectMembersViewCell
             },
         },
+        hideSubHeader: true,
     };
 
-    onEditConfirm(event): void {
-        if (event.data !== event.newData && window.confirm('Are you sure you want to save?')) {
-            const project = new Project(event.data.id, event.newData.title, event.newData.color.value)
-
-            this.projectService.updateProject(project)
-                .subscribe(res => {
-                    if (res) {
-                        event.confirm.resolve(event.newData);
-                        this.snackBar.open(`Project with id"${event.data.id}" was successfully updated.`,
-                            'OK', ConfigurationConstants.DEFAULT_MATSNACKBACK_CONFIGURATION);
-                    }
-                    else {
-                        event.resolve(event.Data);
-                        this.snackBar.open(`Project with id"${event.data.id}" was not updated.`,
-                            'OK', ConfigurationConstants.DEFAULT_MATSNACKBACK_CONFIGURATION);
-                    }
-                });
-        }
-        else {
-            event.confirm.reject();
-        }
+    onAdd(): void {
+        this.modalAddProject.open();
     }
 
-    onDeleteConfirm(event): void {
+    onEdit($event): void {
+        this.modalAddProject.open($event.data);
+    }
+
+    onDelete(event): void {
         if (window.confirm('Are you sure you want to delete?')) {
             this.projectService.deleteProject(event.data.id).subscribe(res => {
                 if (res) {
@@ -162,31 +130,16 @@ export class ProjectsComponent implements OnInit {
                 }
             });
 
-            event.confirm.resolve();
-        } else {
-            event.confirm.reject();
         }
     }
 
-    // the function below is created for ngx + button
-    onCreateConfirm(event) {
-        if (window.confirm('Are you sure you want to create a new project?')) {
-            const data = event.newData;
-            const project = new Project(null, data.title, data.color['currentValue']['hex']);
-            this.projectService.createProject(project)
-                .subscribe(r => {
-                    if (r) {
-                        event.confirm.resolve(event.newData);
-                        this.snackBar.open(`Project "${event.data.title}" was successfully created.`,
-                            'OK', ConfigurationConstants.DEFAULT_MATSNACKBACK_CONFIGURATION);
-                    } else {
-                        event.resolve(event.Data);
-                        this.snackBar.open(`ERROR! Project "${event.data.title}" was not created.`,
-                            'OK', ConfigurationConstants.DEFAULT_MATSNACKBACK_CONFIGURATION);
-                    }
-                });
-        } else {
-            event.confirm.reject();
-        }
+    private addProject(project: Project): void {
+        this.dataSource.append(project);
+        this.snackBar.open(`Project "${project.title}" created.`, '', ConfigurationConstants.DEFAULT_MATSNACKBACK_CONFIGURATION);
+    }
+
+    private updateProject(projectToUpdate: Project, project: Project): void {
+        this.dataSource.update(projectToUpdate, project);
+        this.snackBar.open(`Project with id: ${project.id} updated.`, '', ConfigurationConstants.DEFAULT_MATSNACKBACK_CONFIGURATION);
     }
 }

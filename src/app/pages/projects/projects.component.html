@@ -2,7 +2,7 @@
     <nb-card-header>
         <div class="peer">
             <button type="button" class="btn cur-p btn-primary"
-                    data-toggle="modal" data-target="#modal-add-project" (click)="open()">
+                    data-toggle="modal" data-target="#modal-add-project" (click)="onAdd()">
                 Add Project
             </button>
         </div>
@@ -12,9 +12,8 @@
             <div>
                 <ng2-smart-table [settings]="settings"
                                  [source]="dataSource"
-                                 (deleteConfirm)="onDeleteConfirm($event)"
-                                 (createConfirm)="onCreateConfirm($event)"
-                                 (editConfirm)="onEditConfirm($event)">
+                                 (delete)="onDelete($event)"
+                                 (edit)="onEdit($event)">
                 </ng2-smart-table>
             </div>
 

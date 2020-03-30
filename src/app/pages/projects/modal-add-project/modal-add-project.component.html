@@ -1,6 +1,6 @@
 <ng-template #modalAddProject let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Adding new Project</h4>
+        <h4 class="modal-title" id="modal-basic-title">{{ !editData ? "New Project" : "Update Project"}}</h4>
         <button
             type="button"
             class="close"
@@ -11,11 +11,7 @@
         </button>
     </div>
     <div class="modal-body">
-        <div class="container">
-            <div class="row">
-                <form-add-project #addProjectForm></form-add-project>
-            </div>
-        </div>
+        <form-add-project #addProjectForm [editData]="editData"></form-add-project>
     </div>
     <div class="modal-footer">
         <button
@@ -28,9 +24,9 @@
         </button>
         <button
             class="btn btn-outline-primary"
-            (click)="addProjectForm.submitCreateProjectForm()"
+            (click)="addProjectForm.submitProjectForm()"
         >
-            Create Project
+            {{ !editData ? "Create Project" : "Update Project" }}
         </button>
     </div>
 </ng-template>

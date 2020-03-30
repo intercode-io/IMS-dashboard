@@ -32,7 +32,19 @@ export class ProjectService {
     }
 
     getProjects() {
-        return this.commonHttp.get<Project[]>('project/getList/')
+        return this.commonHttp.get<Project[]>('project/getProjects')
+            .pipe(
+                catchError((err) => {
+                    this.snackBar.open("An error occured while trying to load your projects",
+                        'OK', ConfigurationConstants.DEFAULT_MATSNACKBACK_CONFIGURATION);
+
+                    return of(null);
+                })
+            )
+    }
+
+    getUserProjects() {
+        return this.commonHttp.get<Project[]>('project/getUserProjects')
             .pipe(
                 catchError((err) => {
                     this.snackBar.open("An error occured while trying to load your projects",

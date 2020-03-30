@@ -1,0 +1,13 @@
+<nb-card size="small">
+    <span class="no-members-message text-muted" *ngIf="!selectedMembers.length">No members selected</span>
+    <nb-list *ngIf="selectedMembers.length">
+        <nb-list-item *ngFor="let member of selectedMembers">
+            <nb-user
+                [name]="[member.firstName + ' ' + member.lastName + ' (' + member.email + ')']"
+                [picture]="member.photoUrl"
+            >
+            </nb-user>
+            <nb-icon *ngIf="!viewMode" (click)="removeMember(member)" icon="person-remove-outline"></nb-icon>
+        </nb-list-item>
+    </nb-list>
+</nb-card>
